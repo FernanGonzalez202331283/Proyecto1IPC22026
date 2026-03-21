@@ -1,4 +1,10 @@
-Conexion/ConexionBD.class
-com/mycompany/proyecto1ipc2/JakartaRestConfiguration.class
+Logica/Cliente.class
 Servlet/LoginServlet.class
+Conexion/ClienteDAO.class
 com/mycompany/proyecto1ipc2/resources/JakartaEE11Resource.class
+Conexion/ConexionBD.class
+Servlet/UsuarioServlet.class
+Servlet/ClienteServlet.class
+com/mycompany/proyecto1ipc2/JakartaRestConfiguration.class
+Conexion/UsuarioDAO.class
+Logica/Usuario.class
