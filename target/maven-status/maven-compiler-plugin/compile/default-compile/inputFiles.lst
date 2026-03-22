@@ -19,8 +19,10 @@
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Logica/Usuario.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/CancelacionServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/ClienteServlet.java
+/home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/DesactivarPaquetesServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/DestinoServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/DetallePaqueteServlet.java
+/home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/EditarPaqueteServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/LoginServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/PagoServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/PagosReservacionServlet.java

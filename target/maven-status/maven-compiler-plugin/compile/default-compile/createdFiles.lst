@@ -1,4 +1,5 @@
 Conexion/ReservacionDAO.class
+Servlet/EditarPaqueteServlet.class
 Conexion/CancelacionDAO.class
 Logica/Cliente.class
 Logica/Proveedor.class
@@ -18,6 +19,7 @@ Servlet/CancelacionServlet.class
 Conexion/PaqueteDAO.class
 Servlet/ReservacionServlet.class
 Servlet/LoginServlet.class
+Servlet/DesactivarPaquetesServlet.class
 Servlet/ServicioServlet.class
 Conexion/ConexionBD.class
 Logica/Servicio.class
