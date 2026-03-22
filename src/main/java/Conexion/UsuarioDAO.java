@@ -15,9 +15,6 @@ import java.util.ArrayList;
  * @author fernan
  */
 public class UsuarioDAO {
-    
-
-
     public boolean crearUsuario(Usuario u) {
         String sql = "INSERT INTO usuario(username, password, rol, estado) VALUES (?, ?, ?, true)";
 

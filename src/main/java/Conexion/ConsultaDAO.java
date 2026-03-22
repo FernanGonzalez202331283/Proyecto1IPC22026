@@ -42,4 +42,35 @@ public class ConsultaDAO {
 
     return lista;
 }
+    public ArrayList<String> reservacionesDelDia() {
+
+    ArrayList<String> lista = new ArrayList<>();
+
+    String sql = "SELECT id, fecha_viaje, paquete, estado, agente " +
+                 "FROM reservacion " +
+                 "WHERE DATE(fecha_creacion) = CURDATE()";
+
+    try (Connection con = ConexionBD.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            String data = "{"
+                    + "\"id\":" + rs.getInt("id") + ","
+                    + "\"fecha_viaje\":\"" + rs.getString("fecha_viaje") + "\","
+                    + "\"paquete\":\"" + rs.getString("paquete") + "\","
+                    + "\"estado\":\"" + rs.getString("estado") + "\","
+                    + "\"agente\":\"" + rs.getString("agente") + "\""
+                    + "}";
+
+            lista.add(data);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return lista;
+}
 }

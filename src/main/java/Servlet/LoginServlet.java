@@ -22,52 +22,59 @@ import java.sql.ResultSet;
  * @author fernan
  */
 @WebServlet("/LoginServlet")
-public class LoginServlet extends HttpServlet{
-     @Override
-     protected void doPost(HttpServletRequest request, HttpServletResponse response)
+public class LoginServlet extends HttpServlet {
+
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-response.setHeader("Access-Control-Allow-Origin", "*");
-    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-    String user = request.getParameter("username");
-    String pass = request.getParameter("password");
+        PrintWriter out = response.getWriter();
 
-    PrintWriter out = response.getWriter();
+        String user = request.getParameter("username");
+        String pass = request.getParameter("password");
 
-    try (Connection con = ConexionBD.getConnection()) {
+        try (Connection con = ConexionBD.getConnection()) {
 
-        String sql = "SELECT * FROM usuario WHERE username=? AND password=? AND estado=TRUE";
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setString(1, user);
-        ps.setString(2, pass);
+            if (con == null) {
+                out.print("{\"status\":\"error\",\"mensaje\":\"Error BD\"}");
+                return;
+            }
 
-        ResultSet rs = ps.executeQuery();
+            String sql = "SELECT * FROM usuario WHERE username=? AND password=? AND estado=TRUE";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, user);
+            ps.setString(2, pass);
 
-        if (rs.next()) {
-            String rol = rs.getString("rol");
-            
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String rol = rs.getString("rol");
+
                 HttpSession session = request.getSession();
                 session.setAttribute("usuario", user);
                 session.setAttribute("rol", rol);
-            // 🔥 YA NO usamos redirect
-            out.print("{");
-            out.print("\"status\":\"ok\",");
-            out.print("\"usuario\":\"" + user + "\",");
-            out.print("\"rol\":\"" + rol + "\"");
-            out.print("}");
+                out.print("{\"status\":\"ok\",\"usuario\":\"" + user + "\",\"rol\":\"" + rol + "\"}");
 
-        } else {
-            out.print("{\"status\":\"error\",\"mensaje\":\"Credenciales incorrectas\"}");
+            } else {
+                out.print("{\"status\":\"error\",\"mensaje\":\"Credenciales incorrectas\"}");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.print("{\"status\":\"error\",\"mensaje\":\"Error en servidor\"}");
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-
-        out.print("{\"status\":\"error\",\"mensaje\":\"Error en el servidor\"}");
-    }
     }
 }
