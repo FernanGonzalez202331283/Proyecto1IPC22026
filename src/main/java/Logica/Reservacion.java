@@ -17,6 +17,7 @@ public class Reservacion {
     private double cosotTotal;
     private String estado;
     private String dpiCliente;
+    private int paqueteId;
 
     public int getId() {
         return id;
@@ -80,6 +81,14 @@ public class Reservacion {
 
     public void setDpiCliente(String dpiCliente) {
         this.dpiCliente = dpiCliente;
+    }
+
+    public int getPaqueteId() {
+        return paqueteId;
+    }
+
+    public void setPaqueteId(int paqueteId) {
+        this.paqueteId = paqueteId;
     }
     
 }

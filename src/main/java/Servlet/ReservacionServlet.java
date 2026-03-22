@@ -41,7 +41,7 @@ public class ReservacionServlet extends HttpServlet{
         }
         
         String fecha = request.getParameter("fecha_viaje");
-        String paquete = request.getParameter("paquete");
+        int paqueteId = Integer.parseInt(request.getParameter("paquete_id"));
         int cantidad = Integer.parseInt(request.getParameter("cantidad"));
         double costo = Double.parseDouble(request.getParameter("costo"));
         String dpi = request.getParameter("dpi");
@@ -50,7 +50,7 @@ public class ReservacionServlet extends HttpServlet{
 
         Reservacion r = new Reservacion();
         r.setFechaViaje(fecha);
-        r.setPaquete(paquete);
+        r.setPaqueteId(paqueteId);
         r.setCandidadPersonas(cantidad);
         r.setCosotTotal(costo);
         r.setAgente(agente);

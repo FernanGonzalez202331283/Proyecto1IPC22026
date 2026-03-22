@@ -17,13 +17,13 @@ public class ReservacionDAO {
     
     public boolean crearReservacion(Reservacion r) {
 
-        String sql = "INSERT INTO reservacion(fecha_viaje, paquete, cantidad_personas, agente, costo_total, estado) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reservacion(fecha_viaje, paquete_id, cantidad_personas, agente, costo_total, estado) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = ConexionBD.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+            PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);) {
 
             ps.setString(1, r.getFechaViaje());
-            ps.setString(2, r.getPaquete());
+            ps.setInt(2, r.getPaqueteId());
             ps.setInt(3, r.getCandidadPersonas());
             ps.setString(4, r.getAgente());
             ps.setDouble(5, r.getCosotTotal());
