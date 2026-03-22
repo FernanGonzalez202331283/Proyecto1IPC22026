@@ -5,6 +5,7 @@ Logica/Proveedor.class
 Logica/Destino.class
 Conexion/ClienteDAO.class
 com/mycompany/proyecto1ipc2/resources/JakartaEE11Resource.class
+Logica/Paquete.class
 Conexion/ProveedorDAO.class
 Servlet/ReservacionesDiaServlet.class
 Servlet/ProveedorServlet.class
@@ -13,6 +14,7 @@ Conexion/DestinoDAO.class
 Servlet/UsuarioServlet.class
 Conexion/ConsultaDAO.class
 Servlet/CancelacionServlet.class
+Conexion/PaqueteDAO.class
 Servlet/ReservacionServlet.class
 Servlet/LoginServlet.class
 Conexion/ConexionBD.class
@@ -25,3 +27,4 @@ Logica/Usuario.class
 Servlet/PagoServlet.class
 Logica/Pago.class
 Logica/Reservacion.class
+Servlet/PaqueteServlet.class
