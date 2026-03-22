@@ -40,11 +40,12 @@ public class ReservacionServlet extends HttpServlet{
             return;
         }
         
-         String fecha = request.getParameter("fecha_viaje");
+        String fecha = request.getParameter("fecha_viaje");
         String paquete = request.getParameter("paquete");
         int cantidad = Integer.parseInt(request.getParameter("cantidad"));
         double costo = Double.parseDouble(request.getParameter("costo"));
-
+        String dpi = request.getParameter("dpi");
+        
         String agente = (String) session.getAttribute("usuario");
 
         Reservacion r = new Reservacion();
@@ -53,7 +54,7 @@ public class ReservacionServlet extends HttpServlet{
         r.setCandidadPersonas(cantidad);
         r.setCosotTotal(costo);
         r.setAgente(agente);
-
+        r.setDpiCliente(dpi);
         ReservacionDAO dao = new ReservacionDAO();
 
         if (dao.crearReservacion(r)) {

@@ -14,5 +14,7 @@ Conexion/UsuarioDAO.class
 Logica/Usuario.class
 Servlet/PagoServlet.class
 Logica/Pago.class
+Servlet/PagosReservacionServlet.class
 Servlet/UsuarioServlet.class
 Logica/Reservacion.class
+Conexion/ConsultaDAO.class

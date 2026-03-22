@@ -7,6 +7,7 @@ package Conexion;
 import Logica.Reservacion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -28,8 +29,21 @@ public class ReservacionDAO {
             ps.setDouble(5, r.getCosotTotal());
             ps.setString(6, "PENDIENTE");
             
-            return ps.executeUpdate() > 0;
+            ps.executeUpdate();
+            
+            ResultSet rs = ps.getGeneratedKeys();
+            int idReservacion = 0;
+            
+            if(rs.next()){
+                idReservacion = rs.getInt(1);
+            }
 
+            String sql2 = "INSERT INTO reservacion_cliente(reservacion_id, cliente_dpi) VALUES (?,?)";
+            PreparedStatement ps2 = con.prepareStatement(sql2);
+            ps2.setInt(1, idReservacion);
+            ps2.setString(2, r.getDpiCliente());
+            ps2.executeUpdate();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }

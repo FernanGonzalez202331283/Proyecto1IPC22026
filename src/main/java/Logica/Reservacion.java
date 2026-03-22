@@ -16,6 +16,7 @@ public class Reservacion {
     private String agente;
     private double cosotTotal;
     private String estado;
+    private String dpiCliente;
 
     public int getId() {
         return id;
@@ -71,6 +72,14 @@ public class Reservacion {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getDpiCliente() {
+        return dpiCliente;
+    }
+
+    public void setDpiCliente(String dpiCliente) {
+        this.dpiCliente = dpiCliente;
     }
     
 }
