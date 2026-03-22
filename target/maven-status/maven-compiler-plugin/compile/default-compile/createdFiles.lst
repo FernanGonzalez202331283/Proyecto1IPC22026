@@ -1,4 +1,6 @@
 Conexion/ReservacionDAO.class
+Servlet/CancelacionServlet.class
+Conexion/CancelacionDAO.class
 Logica/Cliente.class
 Servlet/ReservacionServlet.class
 Servlet/LoginServlet.class
@@ -7,7 +9,10 @@ com/mycompany/proyecto1ipc2/resources/JakartaEE11Resource.class
 Conexion/ConexionBD.class
 Servlet/ClienteServlet.class
 com/mycompany/proyecto1ipc2/JakartaRestConfiguration.class
+Conexion/PagoDAO.class
 Conexion/UsuarioDAO.class
 Logica/Usuario.class
+Servlet/PagoServlet.class
+Logica/Pago.class
 Servlet/UsuarioServlet.class
 Logica/Reservacion.class
