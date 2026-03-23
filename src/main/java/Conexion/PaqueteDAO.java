@@ -7,6 +7,7 @@ package Conexion;
 import Logica.Paquete;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -36,4 +37,24 @@ public class PaqueteDAO {
 
         return false;
     }
+    
+    public ResultSet obtenerAltaDemanda() {
+
+    String sql = "SELECT p.id, p.nombre, p.capacidad, COUNT(r.id) AS ocupados " +
+                 "FROM paquete p " +
+                 "JOIN reservacion r ON p.id = r.paquete_id " +
+                 "WHERE r.estado IN ('PENDIENTE','CONFIRMADA') " +
+                 "GROUP BY p.id " +
+                 "HAVING ocupados >= (p.capacidad * 0.8)";
+
+    try {
+        Connection con = ConexionBD.getConnection();
+        PreparedStatement ps = con.prepareStatement(sql);
+        return ps.executeQuery();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
 }

@@ -26,6 +26,7 @@ Logica/Servicio.class
 Servlet/ClienteServlet.class
 com/mycompany/proyecto1ipc2/JakartaRestConfiguration.class
 Conexion/PagoDAO.class
+Servlet/AlertaDemandaServlet.class
 Conexion/UsuarioDAO.class
 Servlet/DestinoServlet.class
 Logica/Usuario.class
