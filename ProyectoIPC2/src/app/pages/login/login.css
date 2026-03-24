@@ -1,0 +1,108 @@
+/* Fondo oscuro con degradado */
+.background {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: radial-gradient(circle at top, #01535b, #111010);
+}
+
+/* Tarjeta tipo glass */
+.login-card {
+  width: 350px;
+  padding: 40px;
+  border-radius: 25px;
+
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+
+  text-align: center;
+  color: white;
+}
+
+/* Avatar */
+.avatar {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+}
+
+/* Inputs */
+.input-group {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+}
+
+.input-group input::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+/* Iconos */
+.icon {
+  margin-right: 10px;
+}
+
+/* Opciones */
+.options {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+.options a {
+  color: #ccc;
+  text-decoration: none;
+}
+/* Título */
+.title {
+  position: absolute;
+  top: 60px;
+  text-align: center;
+  width: 100%;
+
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 1px;
+
+  text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+/* Botón */
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #0e0e0eea, #202222);
+  color: white;
+  font-weight: bold;
+
+  transition: 0.3s;
+}
+.background {
+  position: relative;
+}
+
+button:hover {
+  opacity: 0.8;
+}
