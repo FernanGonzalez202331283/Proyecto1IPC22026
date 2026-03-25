@@ -13,14 +13,30 @@ public class Reservacion {
     private String fechaViaje;
     private String paquete;
     private int candidadPersonas;
-    private String agente;
+    private int idUsurio;
     private double cosotTotal;
     private String estado;
-    private String dpiCliente;
+    private String[] dpis;
     private int paqueteId;
 
     public int getId() {
         return id;
+    }
+
+    public String[] getDpis() {
+        return dpis;
+    }
+
+    public void setDpis(String[] dpis) {
+        this.dpis = dpis;
+    }
+
+    public int getIdUsurio() {
+        return idUsurio;
+    }
+
+    public void setIdUsurio(int idUsurio) {
+        this.idUsurio = idUsurio;
     }
 
     public void setId(int id) {
@@ -51,14 +67,6 @@ public class Reservacion {
         this.candidadPersonas = candidadPersonas;
     }
 
-    public String getAgente() {
-        return agente;
-    }
-
-    public void setAgente(String agente) {
-        this.agente = agente;
-    }
-
     public double getCosotTotal() {
         return cosotTotal;
     }
@@ -74,15 +82,6 @@ public class Reservacion {
     public void setEstado(String estado) {
         this.estado = estado;
     }
-
-    public String getDpiCliente() {
-        return dpiCliente;
-    }
-
-    public void setDpiCliente(String dpiCliente) {
-        this.dpiCliente = dpiCliente;
-    }
-
     public int getPaqueteId() {
         return paqueteId;
     }

@@ -8,6 +8,8 @@ import Logica.Paquete;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -56,5 +58,31 @@ public class PaqueteDAO {
     }
 
     return null;
+}
+    public List<Paquete> listarPaquetes() {
+
+    List<Paquete> lista = new ArrayList<>();
+
+    String sql = "SELECT * FROM paquete WHERE estado='ACTIVO'";
+
+    try (Connection con = ConexionBD.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            Paquete p = new Paquete();
+            p.setId(rs.getInt("id"));
+            p.setNombre(rs.getString("nombre"));
+            p.setPrecio(rs.getDouble("precio"));
+            p.setCapacidad(rs.getInt("capacidad"));
+
+            lista.add(p);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return lista;
 }
 }

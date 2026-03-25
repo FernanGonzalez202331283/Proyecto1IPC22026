@@ -17,7 +17,7 @@ public class ReservacionDAO {
     
     public boolean crearReservacion(Reservacion r) {
 
-        String sql = "INSERT INTO reservacion(fecha_viaje, paquete_id, cantidad_personas, agente, costo_total, estado) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reservacion(fecha_viaje, paquete_id, cantidad_personas, usuario_id, costo_total, estado) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = ConexionBD.getConnection();
             PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);) {
@@ -25,7 +25,7 @@ public class ReservacionDAO {
             ps.setString(1, r.getFechaViaje());
             ps.setInt(2, r.getPaqueteId());
             ps.setInt(3, r.getCandidadPersonas());
-            ps.setString(4, r.getAgente());
+            ps.setInt(4, r.getIdUsurio());
             ps.setDouble(5, r.getCosotTotal());
             ps.setString(6, "PENDIENTE");
             
@@ -40,9 +40,12 @@ public class ReservacionDAO {
 
             String sql2 = "INSERT INTO reservacion_cliente(reservacion_id, cliente_dpi) VALUES (?,?)";
             PreparedStatement ps2 = con.prepareStatement(sql2);
+            
+        for (String dpi : r.getDpis()) {
             ps2.setInt(1, idReservacion);
-            ps2.setString(2, r.getDpiCliente());
+            ps2.setString(2, dpi);
             ps2.executeUpdate();
+        }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  *
@@ -59,4 +60,42 @@ public class PaqueteServlet extends HttpServlet{
             out.print("{\"error\":\"No se pudo crear\"}");
         }
     }
+    
+    @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+
+    // 🔥 CORS (IMPORTANTE)
+    response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+    response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+
+    PrintWriter out = response.getWriter();
+
+    PaqueteDAO dao = new PaqueteDAO();
+    List<Paquete> lista = dao.listarPaquetes();
+
+    out.print("[");
+
+    for (int i = 0; i < lista.size(); i++) {
+        Paquete p = lista.get(i);
+
+        out.print("{");
+        out.print("\"id\":" + p.getId() + ",");
+        out.print("\"nombre\":\"" + p.getNombre() + "\",");
+        out.print("\"precio\":" + p.getPrecio() + ",");
+        out.print("\"capacidad\":" + p.getCapacidad());
+        out.print("}");
+
+        if (i < lista.size() - 1) {
+            out.print(",");
+        }
+    }
+
+    out.print("]");
+}
 }
