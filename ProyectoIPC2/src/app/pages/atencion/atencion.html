@@ -1,1 +1,59 @@
-<p>atencion works!</p>
+<div class="background">
+
+  <div class="container">
+
+    <h1 class="title">Atención al Cliente</h1>
+
+    <div class="cards">
+
+      <!-- CLIENTES -->
+      <div class="card">
+        <h3>Gestión de Clientes</h3>
+
+        <div class="buttons">
+          <button (click)="irClientes('Registrar Cliente')">Registrar Cliente</button>
+          <button (click)="irClientes('Editar cliente')">Editar Cliente</button>
+          <button (click)="irClientes('Consultar cliente')">Consultar Cliente</button>
+        </div>
+      </div>
+
+      <!-- RESERVACIONES -->
+      <div class="card">
+        <h3>Gestión de Reservaciones</h3>
+
+        <div class="buttons">
+          <button (click)="irReservaciones('crear')">Crear Reservación</button>
+          <button (click)="irReservaciones('consultar historial de reservaciones')">Historial de Reservaciones</button>
+          <button (click)="irReservaciones('consultar reservaciones disponibles')">Reservaciones Disponibles</button>
+          <button (click)="irReservaciones('consultar reservaciones del dia de hoy')">Reservaciones del Día</button>
+          <button (click)="irReservaciones('comprobante')">Comprobante</button>
+        </div>
+      </div>
+
+      <!-- PAGOS -->
+      <div class="card">
+        <h3>Gestión de Pagos</h3>
+
+        <div class="buttons">
+          <button (click)="irPagos()">Registrar Pago</button>
+          <button (click)="irPagos()">Consultar historial de pagos</button>
+        </div>
+      </div>
+
+      <!-- REEMBOLSOS -->
+      <div class="card">
+        <h3>Cancelaciones y Reembolsos</h3>
+
+        <div class="buttons">
+          <button (click)="irReembolsos()">Cancelación</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTÓN REGRESAR -->
+    <button class="btn-back" (click)="regresar()">Regresar</button>
+
+  </div>
+
+</div>

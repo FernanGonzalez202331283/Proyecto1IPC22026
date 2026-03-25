@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-atencion',
   standalone: true,
@@ -7,4 +7,27 @@ import { Component } from '@angular/core';
   templateUrl: './atencion.html',
   styleUrl: './atencion.css',
 })
-export class Atencion {}
+
+export class Atencion {
+  constructor(private router: Router) {}
+
+   irClientes(accion: string) {
+    this.router.navigate(['/clientes'], { queryParams: { accion } });
+  }
+
+  irReservaciones(accion: string) {
+    this.router.navigate(['/reservaciones'], { queryParams: { accion } });
+  }
+
+  irPagos() {
+    this.router.navigate(['/pagos']);
+  }
+
+  irReembolsos() {
+    this.router.navigate(['/reembolsos']);
+  }
+  regresar(){
+    localStorage.clear();
+    this.router.navigate(['']);
+  }
+}

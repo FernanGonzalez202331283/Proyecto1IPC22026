@@ -1,0 +1,79 @@
+<div class="background">
+
+  <div class="container">
+    <!-- CONTENIDO DINÁMICO -->
+    <div class="content">
+
+      <ng-container [ngSwitch]="accion">
+
+        <!-- ================= CREAR ================= -->
+        <div *ngSwitchCase="'crear'" class="form-container">
+
+          <h2>Crear Reservación</h2>
+
+          <!-- PAQUETE -->
+          <label>Paquete:</label>
+          <select [(ngModel)]="paqueteSeleccionado" (change)="calcularCosto()">
+            <option [ngValue]="null">Seleccione un paquete</option>
+            <option *ngFor="let p of paquetes" [ngValue]="p">
+              {{p.nombre}} - Q{{p.precio}}
+            </option>
+          </select>
+
+          <!-- FECHA -->
+          <label>Fecha de viaje:</label>
+          <input type="date" [(ngModel)]="fecha_viaje">
+
+          <!-- PASAJEROS -->
+          <h3>Pasajeros</h3>
+
+          <div class="pasajero" *ngFor="let dpi of dpis; let i = index; trackBy: trackByIndex">
+
+            <input type="text" [(ngModel)]="dpis[i]" placeholder="DPI">
+
+            <button type="button" class="buscar" (click)="buscarCliente(i)">
+              Buscar
+            </button>
+
+            <span class="cliente-info" *ngIf="clientes[i]?.nombre">
+              {{clientes[i].nombre}}
+            </span>
+
+            <span class="cliente-error" *ngIf="!clientes[i]?.nombre && dpis[i]">
+              No encontrado
+            </span>
+
+            <button type="button" class="eliminar" (click)="eliminarPasajero(i)">
+              X
+            </button>
+
+          </div>
+
+          <button type="button" class="agregar" (click)="agregarPasajero()">
+            + Agregar pasajero
+          </button>
+
+          <!-- RESUMEN -->
+          <div class="resumen">
+            <h3>Resumen</h3>
+            <p><strong>Pasajeros:</strong> {{cantidad}}</p>
+            <p><strong>Total:</strong> Q{{costo}}</p>
+          </div>
+
+          <!-- CONFIRMAR -->
+          <button class="confirmar" (click)="crearReservacion()">
+            Confirmar Reservación
+          </button>
+
+        </div>
+      </ng-container>
+
+    </div>
+
+    <!-- BOTÓN REGRESAR GLOBAL -->
+     <button class="btn-regresar" (click)="regresar()">
+       Regresar
+    </button>
+  </div>
+
+</div>

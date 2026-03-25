@@ -29,16 +29,17 @@ export class LoginComponent {
             localStorage.setItem('usuario', res.usuario);
             localStorage.setItem('rol', res.rol);
             const rol = res.rol.toLowerCase();
-           this.router.navigate(['/' + rol]);
-            alert('Login correcto');
-            console.log(res);
+            this.router.navigate(['/' + rol]);
+            alert('Bienvenido ' + res.usuario);
           } else {
             alert(res.mensaje);
           }
         },
+        
         error: (err) => {
           console.error(err);
         }
       });
+      
   }
 }
