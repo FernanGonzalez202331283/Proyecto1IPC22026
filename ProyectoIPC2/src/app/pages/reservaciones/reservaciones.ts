@@ -49,8 +49,30 @@ export class Reservaciones {
     if (this.accion === 'disponibles') {
       this.cargarDestinos();
     }
+    if (this.accion === 'hoy') {
+      this.cargarHoy();
+    }
   });
+
   }
+
+  cargarHoy() {
+  fetch('http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=hoy', {
+    method: 'GET',
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("Reservaciones hoy:", data);
+    this.disponibles = data; // reutilizamos la tabla
+  })
+  .catch(err => console.error(err));
+}
+
+mostrarHoy() {
+  this.accion = 'hoy';
+  this.cargarHoy();
+}
   cargarDestinos() {
   fetch('http://localhost:8080/Proyecto1IPC2/DestinoServlet', {
     method: 'GET',

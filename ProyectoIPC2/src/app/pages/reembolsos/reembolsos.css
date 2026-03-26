@@ -1,0 +1,119 @@
+.cancelaciones {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.cancelaciones h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* INPUT */
+.cancelaciones input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* BOTONES */
+.cancelaciones button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+/* BOTÓN BUSCAR */
+.cancelaciones button:first-of-type {
+  background-color: #007bff;
+  color: white;
+}
+
+.cancelaciones button:first-of-type:hover {
+  background-color: #0056b3;
+}
+
+/* BOTÓN CANCELAR */
+.cancelaciones button:nth-of-type(2) {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancelaciones button:nth-of-type(2):hover {
+  background-color: #a71d2a;
+}
+
+/* BOTÓN REGRESAR */
+.btn-regresar {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-regresar:hover {
+  background-color: #4f565c;
+}
+
+/* INFO DE RESERVACIÓN */
+.cancelaciones div {
+  margin-top: 20px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.cancelaciones p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* MENSAJE */
+.cancelaciones p:last-child {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #28a745; /* verde éxito */
+}
+
+.cancelaciones-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #06168c, #161312);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.reembolso-box {
+  margin-top: 15px;
+  padding: 15px;
+  background: #e9f7ef;
+  border-left: 5px solid #28a745;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.reembolso-box h3 {
+  margin: 0;
+  color: #28a745;
+}
+
+.monto {
+  font-size: 24px;
+  font-weight: bold;
+  color: #155724;
+}
+
+.mensaje {
+  margin-top: 10px;
+  font-weight: bold;
+}

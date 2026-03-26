@@ -203,6 +203,12 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
         out.print(gson.toJson(lista));
         return;
     }
+        if ("hoy".equals(accion)) {
+
+            var lista = dao.obtenerReservacionesHoy();
+            out.print(gson.toJson(lista));
+            return;
+        }
 
         // ================= A PARTIR DE AQUÍ REQUIERE SESIÓN =================
         HttpSession session = request.getSession(false);
@@ -211,7 +217,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
             out.print("{\"error\":\"No autorizado\"}");
             return;
         }
-
+        
         // ================= CONSULTAR POR ID =================
         String idStr = request.getParameter("id");
 

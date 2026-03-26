@@ -1,1 +1,54 @@
-<p>reembolsos works!</p>
+<div class="cancelaciones-bg">
+  
+  <div class="cancelaciones">
+    <h2>Cancelación de Reservación</h2>
+
+    <input 
+      type="number" 
+      placeholder="ID Reservación" 
+      [(ngModel)]="reservacionId"
+    >
+
+    <button (click)="cargarReservacion()">
+      Buscar
+    </button>
+
+    <div *ngIf="reservacion">
+
+      <p><strong>ID:</strong> {{ reservacion.id }}</p>
+      <p><strong>Paquete:</strong> {{ reservacion.paquete }}</p>
+      <p><strong>Destino:</strong> {{ reservacion.destino }}</p>
+      <p><strong>Fecha:</strong> {{ reservacion.fechaViaje }}</p>
+      <p><strong>Personas:</strong> {{ reservacion.personas }}</p>
+      <p><strong>Total:</strong> Q{{ reservacion.total }}</p>
+      <p><strong>Estado:</strong> {{ reservacion.estado }}</p>
+
+      <!-- BOTÓN CANCELAR -->
+      <button 
+        *ngIf="reservacion.estado === 'PENDIENTE' || reservacion.estado === 'CONFIRMADA'" 
+        (click)="cancelarReservacion()">
+        Cancelar Reservación
+      </button>
+
+      <!-- REEMBOLSO -->
+      <div *ngIf="reembolso !== null" class="reembolso-box">
+        <h3>Reembolso procesado</h3>
+        <p>Se ha generado un reembolso de:</p>
+        <p class="monto">Q{{ reembolso }}</p>
+      </div>
+
+      <!-- MENSAJE -->
+      <p *ngIf="mensaje" class="mensaje">
+        {{ mensaje }}
+      </p>
+
+    </div>
+
+    <!-- BOTÓN REGRESAR -->
+    <button class="btn-regresar" (click)="regresar()">
+      Regresar
+    </button>
+
+  </div>
+
+</div>

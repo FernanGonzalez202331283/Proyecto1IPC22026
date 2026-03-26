@@ -30,6 +30,7 @@ Servlet/AlertaDemandaServlet.class
 Conexion/UsuarioDAO.class
 Servlet/DestinoServlet.class
 Logica/Usuario.class
+Servlet/DetalleReservacionServlet.class
 Servlet/DetallePaqueteServlet.class
 Servlet/PagoServlet.class
 Logica/Pago.class

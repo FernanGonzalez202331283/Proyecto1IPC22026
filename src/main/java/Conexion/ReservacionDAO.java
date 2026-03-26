@@ -227,4 +227,42 @@ public class ReservacionDAO {
 
     return lista;
 }
+    public List<Reservacion> obtenerReservacionesHoy() {
+
+    List<Reservacion> lista = new ArrayList<>();
+
+    String sql = "SELECT r.*, p.nombre AS paquete_nombre, d.nombre AS destino_nombre " +
+            "FROM reservacion r " +
+            "JOIN paquete p ON r.paquete_id = p.id " +
+            "JOIN destino d ON p.destino_id = d.id " +
+            "WHERE DATE(r.fecha_creacion) = CURDATE() " +
+            "ORDER BY r.id DESC";
+
+    try (Connection con = ConexionBD.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+
+            Reservacion r = new Reservacion();
+
+            r.setId(rs.getInt("id"));
+            r.setFechaViaje(rs.getString("fecha_viaje"));
+            r.setCandidadPersonas(rs.getInt("cantidad_personas"));
+            r.setCosotTotal(rs.getDouble("costo_total"));
+            r.setEstado(rs.getString("estado"));
+
+            r.setPaquete(rs.getString("paquete_nombre"));
+            r.setDestino(rs.getString("destino_nombre"));
+
+            lista.add(r);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return lista;
+}
 }

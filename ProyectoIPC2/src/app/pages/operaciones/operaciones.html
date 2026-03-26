@@ -1,1 +1,38 @@
-<p>operaciones works!</p>
+<div class = "background">
+    <div class = "container">
+      <h1 class="title">Área De Operadores</h1>
+        <div class="cards"></div>
+            <!-- destino -->     
+            <div class="card"> 
+                <h3>Gestion de Destinos</h3>
+                <div class="buttons">
+                    <button (click)="irDestinos('crear')">Crear Destino</button>
+                    <button (click)="irDestinos('editar')">Editar Destino</button>
+                    <button (click)="irDestinos('consultar')">Consultar Destino</button>
+                </div>
+            </div>
+
+            <!-- paquetes -->
+            <div class="card"> 
+                <h3>Gestion de Paquetes</h3>
+                <div class="buttons">
+                    <button (click)="irPaquetes('crear')">Crear Paquete</button>
+                    <button (click)="irPaquetes('editar')">Editar Paquete</button>
+                    <button (click)="irPaquetes('consultar')">Consultar Paquete</button>
+                </div>
+            </div>
+
+            <!-- proveedores -->
+            <div class="card"> 
+                <h3>Gestion de Proveedores</h3>
+                <div class="buttons">
+                    <button (click)="irProveedores('crear')">Crear Proveedor</button>
+                    <button (click)="irProveedores('editar')">Editar Proveedor</button>
+                    <button (click)="irProveedores('consultar')">Consultar Proveedor</button>
+                </div>
+            </div>
+         <!-- BOTÓN REGRESAR -->
+    <button class="btn-back" (click)="regresar()">Regresar</button>
+
+    </div>
+</div>
