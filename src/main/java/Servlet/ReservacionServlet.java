@@ -150,4 +150,90 @@ public class ReservacionServlet extends HttpServlet {
             out.print("{\"error\":\"Error interno\"}");
         }
     }
+    
+   @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+
+    configurarCORS(response);
+
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+
+    PrintWriter out = response.getWriter();
+
+    try {
+
+        String accion = request.getParameter("accion");
+
+        ReservacionDAO dao = new ReservacionDAO();
+        Gson gson = new Gson();
+
+        // ================= HISTORIAL POR CLIENTE (SIN SESIÓN) =================
+        if ("historialCliente".equals(accion)) {
+
+            String dpi = request.getParameter("dpi");
+
+            if (dpi == null || dpi.isEmpty()) {
+                out.print("{\"error\":\"DPI requerido\"}");
+                return;
+            }
+
+            var lista = dao.obtenerPorCliente(dpi);
+            out.print(gson.toJson(lista));
+            return;
+        }
+
+        // ================= DISPONIBLES (SIN SESIÓN) =================
+        if ("disponibles".equals(accion)) {
+
+        String fecha = request.getParameter("fecha");
+        String destino = request.getParameter("destino");
+
+        if (fecha == null || fecha.isEmpty()) {
+            out.print("{\"error\":\"Fecha requerida\"}");
+            return;
+        }
+
+        var lista = dao.obtenerPorFecha(fecha);
+
+        // si quieres con destino:
+        // dao.obtenerPorFechaDestino(fecha, Integer.parseInt(destino));
+
+        out.print(gson.toJson(lista));
+        return;
+    }
+
+        // ================= A PARTIR DE AQUÍ REQUIERE SESIÓN =================
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("usuario_id") == null) {
+            out.print("{\"error\":\"No autorizado\"}");
+            return;
+        }
+
+        // ================= CONSULTAR POR ID =================
+        String idStr = request.getParameter("id");
+
+        if (idStr == null) {
+            out.print("{\"error\":\"ID requerido\"}");
+            return;
+        }
+
+        int id = Integer.parseInt(idStr);
+
+        Reservacion r = dao.obtenerPorId(id);
+
+        if (r == null) {
+            out.print("{\"error\":\"No encontrada\"}");
+            return;
+        }
+
+        out.print(gson.toJson(r));
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        out.print("{\"error\":\"Error interno\"}");
+    }
+}
 }

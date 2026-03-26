@@ -7,6 +7,9 @@ package Conexion;
 import Logica.Destino;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -72,5 +75,36 @@ public class DestinoDAO {
     }
 
     return false;
+}
+    
+    public List<Destino> obtenerTodos() {
+
+    List<Destino> lista = new ArrayList<>();
+
+    String sql = "SELECT * FROM destino";
+
+    try (Connection con = ConexionBD.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+
+            Destino d = new Destino();
+
+            d.setId(rs.getInt("id"));
+            d.setNombre(rs.getString("nombre"));
+            d.setPais(rs.getString("pais"));
+            d.setDescripcion(rs.getString("descripcion"));
+            d.setClima(rs.getString("clima"));
+            d.setImagen(rs.getString("imagen_url"));
+
+            lista.add(d);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return lista;
 }
 }

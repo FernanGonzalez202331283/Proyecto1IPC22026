@@ -6,6 +6,7 @@ package Servlet;
 
 import Conexion.DestinoDAO;
 import Logica.Destino;
+import com.google.gson.Gson;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  *
@@ -21,6 +23,22 @@ import java.io.PrintWriter;
 @WebServlet("/DestinoServlet")
 public class DestinoServlet extends HttpServlet {
 
+    //================= CORS =================
+    private void configurarCORS(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        configurarCORS(response);
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    //================= VALIDACIÓN =================
     private boolean validarAcceso(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
 
@@ -39,16 +57,43 @@ public class DestinoServlet extends HttpServlet {
         return true;
     }
 
+    //================= GET (🔥 LO QUE TE FALTABA) =================
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        configurarCORS(response);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter out = response.getWriter();
+
+        try {
+
+            DestinoDAO dao = new DestinoDAO();
+            List<Destino> lista = dao.obtenerTodos();
+
+            Gson gson = new Gson();
+            out.print(gson.toJson(lista));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.print("{\"error\":\"Error al obtener destinos\"}");
+        }
+    }
+
+    //================= POST =================
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
+        configurarCORS(response);
+
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        if (!validarAcceso(request, response)) {
-            return;
-        }
+        if (!validarAcceso(request, response)) return;
 
         String accion = request.getParameter("accion");
 
@@ -68,6 +113,7 @@ public class DestinoServlet extends HttpServlet {
             } else {
                 out.print("{\"error\":\"No se pudo crear\"}");
             }
+
         } else if (accion.equals("editar")) {
 
             Destino d = new Destino();
@@ -83,6 +129,7 @@ public class DestinoServlet extends HttpServlet {
             } else {
                 out.print("{\"error\":\"No se pudo actualizar\"}");
             }
+
         } else if (accion.equals("eliminar")) {
 
             int id = Integer.parseInt(request.getParameter("id"));
@@ -95,15 +142,16 @@ public class DestinoServlet extends HttpServlet {
         }
     }
 
+    //================= PUT =================
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
+        configurarCORS(response);
+
         response.setContentType("application/json");
 
-        if (!validarAcceso(request, response)) {
-            return;
-        }
+        if (!validarAcceso(request, response)) return;
 
         Destino d = new Destino();
         d.setId(Integer.parseInt(request.getParameter("id")));
@@ -122,15 +170,16 @@ public class DestinoServlet extends HttpServlet {
         }
     }
 
+    //================= DELETE =================
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
+        configurarCORS(response);
+
         response.setContentType("application/json");
 
-        if (!validarAcceso(request, response)) {
-            return;
-        }
+        if (!validarAcceso(request, response)) return;
 
         int id = Integer.parseInt(request.getParameter("id"));
 

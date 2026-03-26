@@ -18,9 +18,47 @@ public class Reservacion {
     private String estado;
     private String[] dpis;
     private int paqueteId;
+    private String destino;
+    private double totalPagado;
+    private double precio;
+    private int cupos;
 
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public int getCupos() {
+        return cupos;
+    }
+
+    public void setCupos(int cupos) {
+        this.cupos = cupos;
+    }
+    
+    
+
+    public double getTotalPagado() {
+        return totalPagado;
+    }
+
+    public void setTotalPagado(double totalPagado) {
+        this.totalPagado = totalPagado;
+    }
+    
     public int getId() {
         return id;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
     }
 
     public String[] getDpis() {

@@ -5,6 +5,9 @@
 package Servlet;
 
 import Conexion.ConsultaDAO;
+import Conexion.PagoDAO;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,25 +29,30 @@ public class PagosReservacionServlet extends HttpServlet {
             throws IOException {
 
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-
+        /*
         HttpSession session = request.getSession(false);
 
         if (session == null) {
             out.print("{\"error\":\"No autorizado\"}");
             return;
         }
+        */
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
 
-        int id = Integer.parseInt(request.getParameter("id"));
+            PagoDAO dao = new PagoDAO();
+            ArrayList<JsonObject> lista = dao.pagosPorReservacion(id);
 
-        ConsultaDAO dao = new ConsultaDAO();
-        ArrayList<String> lista = dao.pagosPorReservacion(id);
+            Gson gson = new Gson();
+            String json = gson.toJson(lista);
 
-        out.print("[");
-        for (int i = 0; i < lista.size(); i++) {
-            out.print(lista.get(i));
-            if (i < lista.size() - 1) out.print(",");
+            out.print(json);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.print("{\"error\":\"Error interno\"}");
         }
-        out.print("]");
     }
 }

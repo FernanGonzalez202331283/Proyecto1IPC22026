@@ -4,9 +4,11 @@
  */
 package Conexion;
 
+import com.google.gson.JsonObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,48 +16,100 @@ import java.sql.ResultSet;
  */
 public class PagoDAO {
     public boolean registrarPago(int reservacionId, double monto, String metodo){
-        String sql = "INSERT INTO pago(reservacion_id, monto, metodo) VALUES (?,?,?)"; 
-        try (Connection con = ConexionBD.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+      
+    try (Connection con = ConexionBD.getConnection()) {
 
-            ps.setInt(1, reservacionId);
-            ps.setDouble(2, monto);
-            ps.setString(3, metodo);
+        //Obtener total pagado
+        String sumaSQL = "SELECT SUM(monto) FROM pago WHERE reservacion_id=?";
+        PreparedStatement ps2 = con.prepareStatement(sumaSQL);
+        ps2.setInt(1, reservacionId);
+        ResultSet rs = ps2.executeQuery();
 
-            ps.executeUpdate();
-            String sumaSQL = "SELECT SUM(monto) FROM pago WHERE reservacion_id=?";
-            PreparedStatement ps2 = con.prepareStatement(sumaSQL);
-            ps2.setInt(1, reservacionId);
-            ResultSet rs = ps2.executeQuery();
-
-            double totalPagado = 0;
-            if (rs.next()) {
-                totalPagado = rs.getDouble(1);
-            }
-            
-            String costoSQL = "SELECT costo_total FROM reservacion WHERE id=?";
-            PreparedStatement ps3 = con.prepareStatement(costoSQL);
-            ps3.setInt(1, reservacionId);
-            ResultSet rs2 = ps3.executeQuery();
-
-            double costoTotal = 0;
-            if (rs2.next()) {
-                costoTotal = rs2.getDouble("costo_total");
-            }
-            
-             if (totalPagado >= costoTotal) {
-                String updateSQL = "UPDATE reservacion SET estado='CONFIRMADA' WHERE id=?";
-                PreparedStatement ps4 = con.prepareStatement(updateSQL);
-                ps4.setInt(1, reservacionId);
-                ps4.executeUpdate();
-            }
-
-            return true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        double totalPagado = 0;
+        if (rs.next()) {
+            totalPagado = rs.getDouble(1);
         }
 
-        return false;
+        //Obtener costo total
+        String costoSQL = "SELECT costo_total, estado FROM reservacion WHERE id=?";
+        PreparedStatement ps3 = con.prepareStatement(costoSQL);
+        ps3.setInt(1, reservacionId);
+        ResultSet rs2 = ps3.executeQuery();
+
+        double costoTotal = 0;
+        String estado = "";
+
+        if (rs2.next()) {
+            costoTotal = rs2.getDouble("costo_total");
+            estado = rs2.getString("estado");
+        }
+
+        //VALIDAR SI YA ESTÁ COMPLETADO
+        if (estado.equals("CONFIRMADA") || totalPagado >= costoTotal) {
+            System.out.println("Pago ya completado");
+            return false;
+        }
+
+        //VALIDAR QUE NO EXCEDA
+        if ((totalPagado + monto) > costoTotal) {
+            System.out.println("El pago excede el total");
+            return false;
+        }
+
+        //INSERTAR PAGO
+        String sql = "INSERT INTO pago(reservacion_id, monto, metodo) VALUES (?,?,?)";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, reservacionId);
+        ps.setDouble(2, monto);
+        ps.setString(3, metodo);
+        ps.executeUpdate();
+
+        //OLVER A CALCULAR TOTAL
+        totalPagado += monto;
+
+        //ACTUALIZAR ESTADO SI YA PAGÓ TODO
+        if (totalPagado >= costoTotal) {
+            String updateSQL = "UPDATE reservacion SET estado='CONFIRMADA' WHERE id=?";
+            PreparedStatement ps4 = con.prepareStatement(updateSQL);
+            ps4.setInt(1, reservacionId);
+            ps4.executeUpdate();
+        }
+
+        return true;
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return false;  
 }
+    public ArrayList<JsonObject> pagosPorReservacion(int id) {
+
+    ArrayList<JsonObject> lista = new ArrayList<>();
+
+    String sql = "SELECT * FROM pago WHERE reservacion_id=?";
+
+    try (Connection con = ConexionBD.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("id", rs.getInt("id"));
+            obj.addProperty("monto", rs.getDouble("monto"));
+            obj.addProperty("metodo", rs.getString("metodo"));
+            obj.addProperty("fecha", rs.getString("fecha"));
+
+            lista.add(obj);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return lista;
+}
+   
+ }
