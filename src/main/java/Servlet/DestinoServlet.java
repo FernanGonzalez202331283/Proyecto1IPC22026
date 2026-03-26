@@ -106,7 +106,7 @@ public class DestinoServlet extends HttpServlet {
             d.setPais(request.getParameter("pais"));
             d.setDescripcion(request.getParameter("descripcion"));
             d.setClima(request.getParameter("clima"));
-            d.setImagen(request.getParameter("imagen"));
+            d.setImagen(request.getParameter("imagen_url"));
 
             if (dao.crearDestino(d)) {
                 out.print("{\"status\":\"ok\",\"mensaje\":\"Destino creado\"}");

@@ -7,6 +7,9 @@ import { Clientes } from './pages/clientes/clientes';
 import { Reservaciones } from './pages/reservaciones/reservaciones';
 import { Pagos } from './pages/pagos/pagos';
 import { Reembolsos } from './pages/reembolsos/reembolsos';
+import { Destinos } from './pages/destinos/destinos';
+import { Paquetes } from './pages/paquetes/paquetes';
+import { Proveedores } from './pages/proveedores/proveedores';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -16,5 +19,8 @@ export const routes: Routes = [
     { path: 'clientes', component: Clientes },
     { path: 'reservaciones', component: Reservaciones },
     { path: 'pagos', component: Pagos },
-    { path: 'reembolsos', component: Reembolsos }
+    { path: 'reembolsos', component: Reembolsos },
+    { path: 'destinos', component: Destinos},
+    { path: 'paquetes', component: Paquetes},
+    { path: 'proveedores', component: Proveedores}
 ];
