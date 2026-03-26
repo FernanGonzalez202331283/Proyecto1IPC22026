@@ -1,67 +1,114 @@
 /* FONDO GENERAL */
 .background {
   min-height: 100vh;
-  padding: 40px;
-
-  background: radial-gradient(circle at top, #01535b, #111010);
-
+  background: linear-gradient(135deg, #05153a, #0e1623);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 }
 
-/* DCONTENEDOR PRINCIPAL (tipo glass) */
+/* CONTENEDOR */
 .container {
+  width: 90%;
+  max-width: 1100px;
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* TITULOS */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0f172a;
+}
+
+/* ================= HISTORIAL ================= */
+
+/* BUSCADOR */
+.buscador {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.buscador input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.buscador button {
+  padding: 10px 20px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.buscador button:hover {
+  background: #1d4ed8;
+}
+
+/* TABLA */
+table {
   width: 100%;
-  max-width: 700px;
+  border-collapse: collapse;
+}
 
-  padding: 30px;
-
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(15px);
-
-  border-radius: 20px;
-
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-
+thead {
+  background: #1e293b;
   color: white;
 }
 
-/* TÍTULO */
-h2 {
+th, td {
+  padding: 12px;
   text-align: center;
-  margin-bottom: 25px;
-  font-size: 28px;
-
-  text-shadow: 0 0 10px rgba(255,255,255,0.4);
 }
 
-/* LABELS */
-label {
-  display: block;
-  margin-top: 12px;
+tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* ESTADOS */
+.pendiente {
+  color: orange;
   font-weight: bold;
-  color: #ddd;
+}
+
+.confirmado {
+  color: green;
+  font-weight: bold;
+}
+
+/* MENSAJE */
+p {
+  text-align: center;
+  margin-top: 20px;
+  color: #555;
+}
+
+/* ================= FORMULARIO ================= */
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* INPUTS */
-input,
-select {
-  width: 100%;
+input, select {
   padding: 10px;
-  margin-top: 5px;
-
-  border-radius: 10px;
-  border: none;
-
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
-
-input:focus,
-select:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
 /* PASAJEROS */
@@ -69,86 +116,109 @@ select:focus {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 10px;
 }
 
-.pasajero input {
-  flex: 2;
-}
-
-/* BOTONES GENERALES */
-button {
-  border: none;
-  border-radius: 10px;
-  padding: 8px 12px;
-  cursor: pointer;
-
-  transition: 0.3s;
-}
-
-button:hover {
-  transform: scale(1.05);
-}
-
-/* BOTONES ESPECÍFICOS */
 .buscar {
-  background: #17a2b8;
+  background: #22c55e;
   color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.buscar:hover {
+  background: #16a34a;
 }
 
 .eliminar {
-  background: #dc3545;
+  background: red;
   color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
+/* AGREGAR */
 .agregar {
-  margin-top: 15px;
-  background: #28a745;
+  background: #3b82f6;
   color: white;
-  width: 100%;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
+.agregar:hover {
+  background: #2563eb;
+}
+
+/* RESUMEN */
+.resumen {
+  background: #f1f5f9;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* BOTÓN CONFIRMAR */
 .confirmar {
-  margin-top: 20px;
-  width: 100%;
-
-  background: linear-gradient(90deg, #007bff, #00c6ff);
+  background: #10b981;
   color: white;
-
   padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
   font-weight: bold;
+}
+
+.confirmar:hover {
+  background: #059669;
 }
 
 /* BOTÓN REGRESAR */
 .btn-regresar {
-  display: block;
-  margin: 20px auto 20px auto;
-  background: linear-gradient(90deg, #0c4ec2, #0c93e1);
+  margin-top: 20px;
+  width: 100%;
+  background: #ef4444;
   color: white;
-
-  padding: 20px 50px;
-  border-radius: 5px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .btn-regresar:hover {
-  transform: scale(1.05);
+  background: #dc2626;
+}
+/* ================= DISPONIBLES ================= */
+
+.disponibles-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-/* INFO CLIENTE */
-.cliente-info {
-  flex: 2;
-  font-size: 13px;
-  color: #00ff9d;
+.resultado-info {
+  text-align: center;
   font-weight: bold;
+  color: #1e293b;
 }
 
-/*RESUMEN */
-.resumen {
-  margin-top: 20px;
-  padding: 15px;
+/* SELECT MEJORADO */
+.buscador select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
 
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
+/* TABLA DISPONIBLES */
+.disponibles-container table {
+  margin-top: 10px;
+}
 
-  border-left: 5px solid #00c6ff;
+/* FILA SIN RESULTADOS */
+.disponibles-container p {
+  font-size: 16px;
+  color: #64748b;
 }

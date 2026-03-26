@@ -11,19 +11,20 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class Reservaciones {
 
- 
-
   accion: string = '';
-
+  historial: any[] = [];
   // PAQUETES
   paquetes: any[] = [];
   paqueteSeleccionado: any = null;
-
+  dpiBuscar: string = '';
   // DATOS RESERVACIÓN
   fecha_viaje: string = '';
   cantidad: number = 1;
   costo: number = 0;
-
+  destinos: any[] = [];
+  destinoSeleccionado: any = null;
+  fechaBuscar: string = '';
+  disponibles: any[] = [];
   // PASAJEROS
   dpis: string[] = [''];
   clientes: any[] = [{}];
@@ -34,12 +35,72 @@ export class Reservaciones {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.accion = params['accion'];
-    });
+     this.route.queryParams.subscribe(params => {
+    this.accion = params['accion'];
 
-    this.cargarPaquetes();
+    // LIMPIAR DATOS SI CAMBIA VISTA
+    this.historial = [];
+    this.disponibles = [];
+
+    if (this.accion === 'crear') {
+      this.cargarPaquetes();
+    }
+
+    if (this.accion === 'disponibles') {
+      this.cargarDestinos();
+    }
+  });
   }
+  cargarDestinos() {
+  fetch('http://localhost:8080/Proyecto1IPC2/DestinoServlet', {
+    method: 'GET',
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("Destinos:", data);
+    this.destinos = data;
+  })
+  .catch(err => console.error(err));
+}
+
+cargarDisponibles() {
+
+  if (!this.fechaBuscar) {
+    alert("Seleccione fecha");
+    return;
+  }
+
+  fetch(`http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=disponibles&fecha=${this.fechaBuscar}`, {
+    method: 'GET',
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("Disponibles:", data);
+    this.disponibles = data;
+  })
+  .catch(err => console.error(err));
+}
+
+cargarHistorial() {
+
+  if (!this.dpiBuscar || this.dpiBuscar.trim() === '') {
+    alert("Ingrese un DPI");
+    return;
+  }
+
+  fetch(`http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=historialCliente&dpi=${this.dpiBuscar}`, {
+    method: 'GET',
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("Historial:", data);
+    this.historial = data;
+  })
+  .catch(err => console.error(err));
+}
 
   // OBTENER PAQUETES
   cargarPaquetes() {

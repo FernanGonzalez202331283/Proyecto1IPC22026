@@ -1,1 +1,64 @@
-<p>pagos works!</p>
+<div class="background">
+
+  <div class="container">
+
+    <div class="form-container">
+
+      <h2>Pagos de Reservación</h2>
+
+      <!-- BUSCAR -->
+      <label>Buscar reservación:</label>
+      <div class="busqueda">
+        <input type="number" [(ngModel)]="reservacion_id" placeholder="Ingrese ID">
+        <button (click)="buscarReservacion()">Buscar</button>
+      </div>
+
+      <!-- DATOS -->
+      <div *ngIf="reservacion">
+
+        <h3>Datos de la Reservación</h3>
+
+        <div class="info-grid">
+          <p><strong>ID:</strong> {{reservacion.id}}</p>
+          <p><strong>Paquete:</strong> {{reservacion.paquete}}</p>
+          <p><strong>Destino:</strong> {{reservacion.destino}}</p>
+          <p><strong>Fecha:</strong> {{reservacion.fechaViaje}}</p>
+          <p><strong>Personas:</strong> {{reservacion.candidadPersonas}}</p>
+          <p><strong>Total:</strong> Q{{reservacion.cosotTotal}}</p>
+          <p><strong>Estado:</strong> {{reservacion.estado}}</p>
+        </div>
+
+        <!--PAGO -->
+        <h3>Registrar Pago</h3>
+
+        <input type="number" [(ngModel)]="monto" placeholder="Monto">
+
+        <select [(ngModel)]="metodo">
+          <option value="">Seleccione método</option>
+          <option>Efectivo</option>
+          <option>Tarjeta</option>
+          <option>Transferencia</option>
+        </select>
+
+        <button 
+          class="confirmar"
+          (click)="registrarPago()" 
+          [disabled]="reservacion?.estado === 'CONFIRMADA'">
+          Registrar Pago
+        </button>
+
+        <button class="agregar" (click)="generarPDF()">
+          Descargar comprobante
+        </button>
+      </div>
+
+    </div>
+
+    <!-- BOTÓN GLOBAL -->
+    <button class="btn-regresar" (click)="regresar()">
+      Regresar
+    </button>
+
+  </div>
+
+</div>

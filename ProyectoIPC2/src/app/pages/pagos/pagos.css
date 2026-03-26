@@ -1,0 +1,169 @@
+/* FONDO */
+.background {
+  min-height: 100vh;
+  padding: 40px;
+
+  background: radial-gradient(circle at top, #01535b, #111010);
+
+  display: flex;
+  justify-content: center;
+}
+
+/* CONTENEDOR */
+.container {
+  width: 100%;
+  max-width: 700px;
+  color: white;
+}
+
+/* TARJETAS (REUTILIZABLE) */
+.card {
+  margin-top: 20px;
+  padding: 20px;
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* TITULOS */
+h2, h3 {
+  text-align: center;
+}
+
+/* TEXTO INFO */
+.info-text {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 15px;
+  color: #ccc;
+}
+
+/* BUSQUEDA */
+.busqueda-box {
+  display: flex;
+  gap: 10px;
+}
+
+.busqueda-box input {
+  flex: 1;
+}
+
+/* GRID INFO */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* INPUTS */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+
+  border-radius: 10px;
+  border: none;
+
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+/* BOTONES */
+button {
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* BOTONES COLORES */
+.btn-primary {
+  background: linear-gradient(90deg, #007bff, #00c6ff);
+  color: white;
+}
+
+.btn-secondary {
+  background: linear-gradient(90deg, #28a745, #00ff9d);
+  color: black;
+}
+
+/* REGRESAR */
+.btn-back {
+  margin-top: 30px;
+  width: 100%;
+
+  background: linear-gradient(90deg, #ff4b2b, #ff416c);
+  color: white;
+
+  padding: 12px;
+  border-radius: 20px;
+}
+
+/* HISTORIAL */
+ul {
+  padding-left: 20px;
+}
+/* FORMULARIO UNIFICADO */
+.form-container {
+  padding: 30px;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+
+  color: white;
+}
+
+/* GRID DE INFO */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* BUSQUEDA */
+.busqueda {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* HISTORIAL */
+.historial {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+.tabla-pagos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tabla-pagos th,
+.tabla-pagos td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.tabla-pagos th {
+  background-color: #34495e;
+  color: white;
+}
+
+.tabla-pagos tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
