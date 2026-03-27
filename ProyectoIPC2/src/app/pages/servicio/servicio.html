@@ -1,0 +1,21 @@
+<div class="background">
+    <div class="container">
+
+    <h1>Gestión de Servicios</h1>
+
+    <div class="formulario">
+
+        <input [(ngModel)]="servicio.paqueteId" placeholder="ID Paquete">
+
+        <input [(ngModel)]="servicio.proveedorId" placeholder="ID Proveedor">
+
+        <input [(ngModel)]="servicio.nombre" placeholder="Nombre del servicio">
+
+        <input [(ngModel)]="servicio.costo" placeholder="Costo">
+
+        <button (click)="crearServicio()">Guardar Servicio</button>
+
+    </div>
+    <button class="btn-regresar" (click)="regresar()">Regresar</button>
+    </div>
+</div>

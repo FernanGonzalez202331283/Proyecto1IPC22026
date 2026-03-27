@@ -10,6 +10,7 @@ import { Reembolsos } from './pages/reembolsos/reembolsos';
 import { Destinos } from './pages/destinos/destinos';
 import { Paquetes } from './pages/paquetes/paquetes';
 import { Proveedores } from './pages/proveedores/proveedores';
+import { Servicio } from './pages/servicio/servicio';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -22,5 +23,6 @@ export const routes: Routes = [
     { path: 'reembolsos', component: Reembolsos },
     { path: 'destinos', component: Destinos},
     { path: 'paquetes', component: Paquetes},
-    { path: 'proveedores', component: Proveedores}
+    { path: 'proveedores', component: Proveedores},
+    { path: 'servicio', component: Servicio}
 ];

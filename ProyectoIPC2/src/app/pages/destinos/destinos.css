@@ -115,3 +115,19 @@ h2 {
   margin-bottom: 20px;
   color: #0f172a;
 }
+
+/* BOTÓN REGRESAR */
+.btn-regresar {
+  margin-top: 20px;
+  width: 100%;
+  background: #ef4444;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-regresar:hover {
+  background: #dc2626;
+}

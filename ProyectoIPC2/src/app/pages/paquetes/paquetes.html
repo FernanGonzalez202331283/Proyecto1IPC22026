@@ -1,1 +1,40 @@
-<p>paquetes works!</p>
+<div class="background">
+
+  <div class="container">
+
+    <h1>Gestión de Paquetes</h1>
+
+    <button class="btn-main" (click)="irPaquetes('crear')">
+      Crear Paquete
+    </button>
+
+    <!-- FORMULARIO -->
+    <div *ngIf="accion === 'crear'" class="formulario">
+
+      <label>Nombre</label>
+      <input type="text" [(ngModel)]="paquete.nombre" placeholder="Nombre">
+
+      <label>Destino</label>
+      <input [(ngModel)]="paquete.destinoId" placeholder="ID del destino">
+
+      <label>Duración</label>
+      <input type="number" [(ngModel)]="paquete.duracion" placeholder="Días">
+
+      <label>Descripción</label>
+      <input type="text" [(ngModel)]="paquete.descripcion" placeholder="Descripción">
+
+      <label>Precio</label>
+      <input type="number" [(ngModel)]="paquete.precio" placeholder="Precio">
+
+      <label>Capacidad</label>
+      <input type="number" [(ngModel)]="paquete.capacidad" placeholder="Capacidad">
+
+      <button class="btn-save" (click)="crearPaquete()">
+        Guardar
+      </button>
+
+    </div>
+    <button class="btn-regresar" (click)="regresar()">Regresar</button>
+  </div>
+
+</div>

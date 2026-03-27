@@ -19,6 +19,10 @@ export class Operaciones {
     this.router.navigate(['/paquetes'], { queryParams: { accion } });
   }
 
+  irServicio(accion: string) {
+    this.router.navigate(['/servicio'], { queryParams: { accion } });
+  }
+
   irProveedores(accion: string) {
     this.router.navigate(['/proveedores'], { queryParams: { accion } });
   }
