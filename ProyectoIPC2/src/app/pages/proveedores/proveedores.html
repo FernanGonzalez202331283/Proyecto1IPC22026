@@ -1,1 +1,9 @@
-<p>proveedores works!</p>
+<h2>Crear Proveedor</h2>
+
+<form (submit)="irProveedores('crear'); $event.preventDefault()">
+  <input type="text" placeholder="Nombre" [(ngModel)]="nuevoProveedor.nombre" name="nombre" required />
+  <input type="text" placeholder="Tipo" [(ngModel)]="nuevoProveedor.tipo" name="tipo" required />
+  <input type="text" placeholder="País" [(ngModel)]="nuevoProveedor.pais" name="pais" required />
+  <input type="text" placeholder="Contacto" [(ngModel)]="nuevoProveedor.contacto" name="contacto" required />
+  <button type="submit">Crear Proveedor</button>
+</form>
