@@ -1,9 +1,51 @@
-<h2>Crear Proveedor</h2>
+<div class="background">
+  <div class="container">
+    <div class="content">
+      <!-- ===== CREAR ===== -->
+      <div *ngIf="accion === 'crear'" class="form-container">
+        <h2>Crear Proveedor</h2>
 
-<form (submit)="irProveedores('crear'); $event.preventDefault()">
-  <input type="text" placeholder="Nombre" [(ngModel)]="nuevoProveedor.nombre" name="nombre" required />
-  <input type="text" placeholder="Tipo" [(ngModel)]="nuevoProveedor.tipo" name="tipo" required />
-  <input type="text" placeholder="País" [(ngModel)]="nuevoProveedor.pais" name="pais" required />
-  <input type="text" placeholder="Contacto" [(ngModel)]="nuevoProveedor.contacto" name="contacto" required />
-  <button type="submit">Crear Proveedor</button>
-</form>
+        <input [(ngModel)]="nombre" placeholder="Nombre del proveedor">
+        <input [(ngModel)]="tipo" placeholder="Tipo de servicio">
+        <input [(ngModel)]="pais" placeholder="País">
+        <input [(ngModel)]="contacto" placeholder="Contacto">
+
+        <button (click)="crearProveedor()">Guardar</button>
+
+        <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+      </div>
+
+      <!-- ===== EDITAR ===== -->
+      <div *ngIf="accion === 'editar'" class="form-container">
+        <h2>Editar Proveedor</h2>
+
+        <input type="number" [(ngModel)]="id" placeholder="ID del proveedor">
+
+        <input [(ngModel)]="nombre" placeholder="Nombre">
+        <input [(ngModel)]="tipo" placeholder="Tipo">
+        <input [(ngModel)]="pais" placeholder="País">
+        <input [(ngModel)]="contacto" placeholder="Contacto">
+
+        <button (click)="editarProveedor()">Actualizar</button>
+
+        <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+      </div>
+
+      <!-- ===== ELIMINAR ===== -->
+      <div *ngIf="accion === 'eliminar'" class="form-container">
+        <h2>Eliminar Proveedor</h2>
+
+        <input type="number" [(ngModel)]="id" placeholder="ID del proveedor">
+
+        <button (click)="eliminarProveedor()">Eliminar</button>
+
+        <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+      </div>
+
+    </div>
+
+    <!-- BOTÓN GLOBAL -->
+    <button class="btn-regresar" (click)="regresar()">Regresar</button>
+
+  </div>
+</div>

@@ -1,16 +1,14 @@
-/* Fondo */
+/* ===== FONDO ===== */
 .background {
-   min-height: 100vh;
+  min-height: 100vh;
   padding: 40px;
-
   background: radial-gradient(circle at top, #01535b, #111010);
-
   display: flex;
   justify-content: center;
   align-items: flex-start;
 }
 
-/* Contenedor */
+/* ===== CONTENEDOR ===== */
 .container {
   width: 400px;
   padding: 25px;
@@ -19,18 +17,17 @@
   box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
-/* Título */
-h1 {
-  text-align: center;
+/* ===== TOP BAR (BOTONES) ===== */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
   margin-bottom: 20px;
-  color: #333;
 }
 
-/* Botón principal */
-.btn-main {
-  width: 100%;
+.top-bar button {
+  flex: 1;
   padding: 10px;
-  margin-bottom: 15px;
   background: #007bff;
   color: white;
   border: none;
@@ -38,39 +35,31 @@ h1 {
   cursor: pointer;
 }
 
-.btn-main:hover {
+.top-bar button:hover {
   background: #0056b3;
 }
 
-/* Formulario */
-.formulario {
+/* ===== FORMULARIO ===== */
+.form-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* Labels */
-.formulario label {
-  font-size: 13px;
-  font-weight: bold;
-  color: #555;
-}
-
-/* Inputs */
-.formulario input {
+/* ===== INPUTS ===== */
+.form-container input {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
 }
 
-/* Focus */
-.formulario input:focus {
+.form-container input:focus {
   border-color: #007bff;
   outline: none;
 }
 
-/* Botón guardar */
-.btn-save {
+/* ===== BOTONES ===== */
+.form-container button {
   margin-top: 10px;
   padding: 12px;
   background: #28a745;
@@ -80,10 +69,31 @@ h1 {
   cursor: pointer;
 }
 
-.btn-save:hover {
+.form-container button:hover {
   background: #1e7e34;
 }
-/* BOTÓN REGRESAR */
+
+/* BOTÓN ELIMINAR */
+.form-container button.btn-delete {
+  background: #dc3545;
+}
+
+.form-container button.btn-delete:hover {
+  background: #b02a37;
+}
+
+/* ===== MENSAJE ===== */
+.mensaje {
+  margin-top: 10px;
+  padding: 10px;
+  background: #d4edda;
+  color: #155724;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ===== BOTÓN REGRESAR ===== */
 .btn-regresar {
   margin-top: 20px;
   width: 100%;

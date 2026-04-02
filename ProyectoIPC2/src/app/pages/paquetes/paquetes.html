@@ -1,40 +1,109 @@
 <div class="background">
 
   <div class="container">
+    <div class="content">
 
-    <h1>Gestión de Paquetes</h1>
+      <ng-container [ngSwitch]="accion">
 
-    <button class="btn-main" (click)="irPaquetes('crear')">
-      Crear Paquete
-    </button>
+        <!-- ===== MENÚ ===== -->
+        <div class="top-bar" *ngSwitchCase="'menu'">
+          <button (click)="irPaquetes('crear')">+ Crear</button>
+          <button (click)="irPaquetes('editar')">✏️ Editar</button>
+          <button (click)="irPaquetes('desactivar')">Desactivar</button>
+        </div>
 
-    <!-- FORMULARIO -->
-    <div *ngIf="accion === 'crear'" class="formulario">
+        <!-- ===== CREAR ===== -->
+        <div *ngSwitchCase="'crear'" class="formulario">
+          <h2>Crear Paquete</h2>
 
-      <label>Nombre</label>
-      <input type="text" [(ngModel)]="paquete.nombre" placeholder="Nombre">
+          <input [(ngModel)]="paquete.nombre" placeholder="Nombre" />
 
-      <label>Destino</label>
-      <input [(ngModel)]="paquete.destinoId" placeholder="ID del destino">
+          <input type="number" [(ngModel)]="paquete.destinoId" placeholder="ID del destino" />
 
-      <label>Duración</label>
-      <input type="number" [(ngModel)]="paquete.duracion" placeholder="Días">
+          <input type="number" [(ngModel)]="paquete.duracion" placeholder="Duración (días)" />
 
-      <label>Descripción</label>
-      <input type="text" [(ngModel)]="paquete.descripcion" placeholder="Descripción">
+          <input [(ngModel)]="paquete.descripcion" placeholder="Descripción" />
 
-      <label>Precio</label>
-      <input type="number" [(ngModel)]="paquete.precio" placeholder="Precio">
+          <input type="number" [(ngModel)]="paquete.precio" placeholder="Precio" />
 
-      <label>Capacidad</label>
-      <input type="number" [(ngModel)]="paquete.capacidad" placeholder="Capacidad">
+          <input type="number" [(ngModel)]="paquete.capacidad" placeholder="Capacidad" />
 
-      <button class="btn-save" (click)="crearPaquete()">
-        Guardar
-      </button>
+          <button class="btn-save" (click)="crearPaquete()">
+            Guardar
+          </button>
+           <!-- MENSAJE -->
+      <p class="mensaje" *ngIf="mensaje">
+        {{ mensaje }}
+      </p>
+        </div>
+
+        <!-- ===== EDITAR ===== -->
+        <div *ngSwitchCase="'editar'" class="formulario">
+          <h2>Editar Paquete</h2>
+
+          <input type="number" [(ngModel)]="paquete.id" placeholder="ID del paquete" />
+
+          <input [(ngModel)]="paquete.nombre" placeholder="Nombre" />
+
+          <input type="number" [(ngModel)]="paquete.destinoId" placeholder="ID del destino" />
+
+          <input type="number" [(ngModel)]="paquete.duracion" placeholder="Duración (días)" />
+
+          <input [(ngModel)]="paquete.descripcion" placeholder="Descripción" />
+
+          <input type="number" [(ngModel)]="paquete.precio" placeholder="Precio" />
+
+          <input type="number" [(ngModel)]="paquete.capacidad" placeholder="Capacidad" />
+
+          <button class="btn-save" (click)="editarPaquete()">
+            Actualizar
+          </button>
+           <!-- MENSAJE -->
+      <p class="mensaje" *ngIf="mensaje">
+        {{ mensaje }}
+      </p>
+        </div>
+
+        <!-- ===== DESACTIVAR ===== -->
+        <div *ngSwitchCase="'desactivar'" class="formulario">
+          <h2>Desactivar paquete</h2>
+
+          <input type="number" [(ngModel)]="paquete.id" placeholder="ID del paquete" />
+
+          <button class="btn-delete" (click)="desactivarPaquete()">
+            Desactivar
+          </button>
+
+           <!-- MENSAJE -->
+          <p class="mensaje" *ngIf="mensaje">
+            {{ mensaje }}
+          </p>
+        </div>
+
+        <!-- ===== ACTIVAR ===== -->
+        <div *ngSwitchCase="'activar'" class="formulario">
+          <h2>Activar paquete</h2>
+
+          <input type="number" [(ngModel)]="paquete.id" placeholder="ID del paquete" />
+
+          <button class="btn-save" (click)="activarPaquete()">
+            Activar
+          </button>
+
+          <p class="mensaje" *ngIf="mensaje">
+            {{ mensaje }}
+          </p>
+        </div>
+
+      </ng-container>
 
     </div>
-    <button class="btn-regresar" (click)="regresar()">Regresar</button>
+
+    <!-- BOTÓN GLOBAL -->
+    <button class="btn-regresar" (click)="regresar()">
+      Regresar
+    </button>
+
   </div>
 
 </div>

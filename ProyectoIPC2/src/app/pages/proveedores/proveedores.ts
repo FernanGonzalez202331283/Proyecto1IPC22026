@@ -3,51 +3,120 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
+import { ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-proveedores',
+  standalone: true,
   imports: [HttpClientModule, CommonModule, FormsModule],
   templateUrl: './proveedores.html',
   styleUrl: './proveedores.css',
 })
 export class Proveedores {
-   nuevoProveedor = {
-    nombre: '',
-    tipo: '',
-    pais: '',
-    contacto: ''
+
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute){}
+
+  // control de la vista
+  accion: string = 'crear';
+
+  // campos del form
+  nombre: string = '';
+  tipo: string = '';
+  pais: string = '';
+  contacto: string = '';
+
+  mensaje: string = '';
+
+  // cambiar la visata
+
+  irProveedores(op: string){
+    this.accion = op;
+  }
+  
+  ngOnInit() {
+  this.route.queryParams.subscribe(params => {
+    this.accion = params['accion'] || 'crear';
+  });
+}
+
+  //guardar al proveedor
+
+enviarProveedor(accion: string) {
+
+  if (accion === 'crear' || accion === 'editar') {
+  if (!this.nombre || !this.tipo || !this.pais || !this.contacto) {
+    this.mensaje = 'Todos los campos son obligatorios';
+    return;
+  }
+}
+
+if (accion !== 'crear' && (!this.id || this.id.toString().trim() === '')) {
+  this.mensaje = 'ID requerido';
+  return;
+}
+
+  const data = {
+    id: Number(this.id),
+    nombre: this.nombre,
+    tipo: this.tipo,
+    pais: this.pais,
+    contacto: this.contacto,
+    accion: accion
   };
 
-  constructor(private http: HttpClient, private router: Router) {}
+  this.http.post(
+    'http://localhost:8080/Proyecto1IPC2/ProveedorServlet',
+    data,
+    { withCredentials: true }
+  ).subscribe({
 
-  irProveedores(accion: string) {
-    if (accion === 'crear') {
-      // Validar campos básicos
-      if (!this.nuevoProveedor.nombre || !this.nuevoProveedor.tipo || !this.nuevoProveedor.pais || !this.nuevoProveedor.contacto) {
-        alert('Todos los campos son requeridos');
+    next: (res: any) => {
+
+      console.log(res);
+
+      if (res.error) {
+        this.mensaje = res.error;
         return;
       }
 
-      const body = new HttpParams()
-        .set('accion', 'crear')
-        .set('nombre', this.nuevoProveedor.nombre)
-        .set('tipo', this.nuevoProveedor.tipo)
-        .set('pais', this.nuevoProveedor.pais)
-        .set('contacto', this.nuevoProveedor.contacto);
+      this.mensaje = res.mensaje || 'Operación realizada correctamente ✅';
 
-      this.http.post('http://localhost:8080/Proyecto1IPC2/ProveedorServlet', body.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        withCredentials: true // Importante si tu servlet usa sesión
-      }).subscribe({
-        next: (res: any) => {
-          alert(res.mensaje || 'Proveedor creado con éxito');
-          // Limpiar formulario
-          this.nuevoProveedor = { nombre: '', tipo: '', pais: '', contacto: '' };
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Error al crear proveedor');
-        }
-      });
+      setTimeout(() => {
+        this.limpiar();
+        this.mensaje = '';
+      }, 3000);
+    },
+
+    error: (err) => {
+      console.error(err);
+      this.mensaje = 'Error en la operación';
     }
+
+  });
+}
+id: any = null;
+
+crearProveedor() {
+  this.enviarProveedor('crear');
+}
+
+editarProveedor() {
+  this.enviarProveedor('editar');
+}
+
+eliminarProveedor() {
+  this.enviarProveedor('eliminar');
+}
+
+limpiar() {
+  this.id = null;
+  this.nombre = '';
+  this.tipo = '';
+  this.pais = '';
+  this.contacto = '';
+}
+  regresar() {
+    this.router.navigate(['/operaciones']);
   }
+
 }

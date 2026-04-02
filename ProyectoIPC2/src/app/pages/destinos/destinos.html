@@ -5,46 +5,70 @@
 
       <ng-container [ngSwitch]="accion">
 
-        <!-- BOTÓN PRINCIPAL -->
-        <div class="top-bar">
-          <button class="btn-crear" (click)="irDestinos('crear')">
-            + Crear Destino
-          </button>
+        <div class="top-bar" *ngSwitchDefault>
+          <button (click)="irDestinos('crear')">Crear</button>
+          <button (click)="irDestinos('editar')">Editar</button>
+          <button (click)="irDestinos('eliminar')">Eliminar</button>
         </div>
 
-        <!-- FORM DESTINO -->
+        <!-- CREAR -->
         <div *ngSwitchCase="'crear'" class="form-container">
-
           <h2>Crear Destino</h2>
 
           <div class="input-group">
-            <input type="text" placeholder="Nombre del destino" [(ngModel)]="nombre">
-            <input type="text" placeholder="País" [(ngModel)]="pais">
-            <input type="text" placeholder="Clima (Ej: Tropical)" [(ngModel)]="clima">
+            <input [(ngModel)]="nombre" placeholder="Nombre">
+            <input [(ngModel)]="pais" placeholder="País">
+            <input [(ngModel)]="clima" placeholder="Clima">
           </div>
 
-          <textarea placeholder="Descripción del destino..." [(ngModel)]="descripcion"></textarea>
+          <textarea [(ngModel)]="descripcion" placeholder="Descripción"></textarea>
 
-          <input type="text" placeholder="URL de la imagen" [(ngModel)]="imagen_url">
+          <input [(ngModel)]="imagen_url" placeholder="URL imagen">
 
-          <!-- PREVIEW -->
           <div class="preview-container" *ngIf="imagen_url">
             <img [src]="imagen_url" class="preview">
           </div>
 
-          <button class="confirmar" (click)="guardarDestino()">
-            Guardar Destino
-          </button>
+          <button class="confirmar" (click)="guardarDestino()">Guardar</button>
+        </div>
 
-          <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+        <!-- EDITAR -->
+        <div *ngSwitchCase="'editar'" class="form-container">
+          <h2>Editar Destino</h2>
 
+          <input [(ngModel)]="id" placeholder="ID">
+
+          <div class="input-group">
+            <input [(ngModel)]="nombre" placeholder="Nombre">
+            <input [(ngModel)]="pais" placeholder="País">
+            <input [(ngModel)]="clima" placeholder="Clima">
+          </div>
+
+          <textarea [(ngModel)]="descripcion" placeholder="Descripción"></textarea>
+
+          <input [(ngModel)]="imagen_url" placeholder="Imagen">
+
+          <button class="confirmar" (click)="editarDestino()">Actualizar</button>
+        </div>
+
+        <!-- ELIMINAR -->
+        <div *ngSwitchCase="'eliminar'" class="form-container">
+          <h2>Eliminar Destino</h2>
+
+          <input [(ngModel)]="id" placeholder="ID">
+
+          <button class="confirmar" (click)="eliminarDestino()">Eliminar</button>
         </div>
 
       </ng-container>
 
+      <!-- MENSAJE GLOBAL -->
+      <p class="mensaje" *ngIf="mensaje">
+        {{ mensaje }}
+      </p>
+
     </div>
 
-    <!-- BOTÓN GLOBAL -->
     <button class="btn-regresar" (click)="regresar()">
       Regresar
     </button>
