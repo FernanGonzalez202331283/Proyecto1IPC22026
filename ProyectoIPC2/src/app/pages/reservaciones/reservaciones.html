@@ -67,12 +67,33 @@
 
           <!-- PAQUETE -->
           <label>Paquete:</label>
-          <select [(ngModel)]="paqueteSeleccionado" (change)="calcularCosto()">
+          <select [(ngModel)]="paqueteSeleccionado" (change)="calcularCosto(); cargarDetallePaquete()">
             <option [ngValue]="null">Seleccione un paquete</option>
             <option *ngFor="let p of paquetes" [ngValue]="p">
               {{p.nombre}} - Q{{p.precio}}
             </option>
           </select>
+          <div *ngIf="detallePaquete.length > 0" class="detalle-paquete">
+
+          <h3>Detalle del paquete</h3>
+             <img 
+            *ngIf="detallePaquete[0].imagen" 
+            [src]="detallePaquete[0].imagen" 
+            width="300"
+          >
+          <p><strong>Destino:</strong> {{ detallePaquete[0].destino }}</p>
+          <p><strong>Duración:</strong> {{ detallePaquete[0].duracion }} días</p>
+
+          <h4>Incluye:</h4>
+          <ul>
+            <li *ngFor="let d of detallePaquete">
+              {{ d.servicio }} ({{ d.proveedor }}) → Q{{ d.costo }}
+            </li>
+          </ul>
+          <p><strong>Precio venta:</strong> Q{{ detallePaquete[0].precio }}</p>
+          <p><strong>Costo total:</strong> Q{{ getCostoTotalServicios() }}</p>
+          <p><strong>Ganancia:</strong> Q{{ getGanancia() }}</p>
+        </div>
 
           <!-- FECHA -->
           <label>Fecha de viaje:</label>

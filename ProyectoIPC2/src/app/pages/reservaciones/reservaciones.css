@@ -23,7 +23,11 @@ h2 {
   margin-bottom: 20px;
   color: #0f172a;
 }
-
+.detalle-paquete img {
+  border-radius: 10px;
+  margin-bottom: 10px;
+  max-width: 100%;
+}
 /* ================= HISTORIAL ================= */
 
 /* BUSCADOR */

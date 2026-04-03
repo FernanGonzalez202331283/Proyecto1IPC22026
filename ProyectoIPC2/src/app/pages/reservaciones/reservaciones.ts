@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+
 @Component({
   selector: 'app-reservaciones',
   standalone: true,
@@ -17,6 +20,7 @@ export class Reservaciones {
   paquetes: any[] = [];
   paqueteSeleccionado: any = null;
   dpiBuscar: string = '';
+  detallePaquete: any[] = [];
   // DATOS RESERVACIÓN
   fecha_viaje: string = '';
   cantidad: number = 1;
@@ -280,16 +284,22 @@ cargarHistorial() {
     .then(res => res.json())
     .then(data => {
 
-      console.log("Respuesta:", data);
+  console.log("Respuesta:", data);
 
-      if (data.error) {
-        alert(data.error);
-      } else {
-        alert(data.mensaje || "Reservación creada correctamente");
-        this.resetFormulario();
-      }
+  if (data.error) {
+    alert(data.error);
+  } else {
+    alert(data.mensaje || "Reservación creada correctamente");
 
-    })
+    // AQUÍ USAS EL ID
+    const id = data.idReservacion;
+
+    this.generarPDF(id); //GENERAR PDF
+
+    this.resetFormulario();
+  }
+
+})
     .catch(error => {
       console.error(error);
       alert("Error al crear reservación");
@@ -313,4 +323,95 @@ cargarHistorial() {
   regresar() {
     this.router.navigate(['/atencion']);
   }
+  cargarDetallePaquete() {
+
+  if (!this.paqueteSeleccionado?.id) return;
+
+  fetch(`http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=detallePaquete&paqueteId=${this.paqueteSeleccionado.id}`, {
+    method: 'GET',
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("Detalle paquete:", data);
+    this.detallePaquete = data;
+  })
+  .catch(err => console.error(err));
+}
+getCostoTotalServicios(): number {
+  return this.detallePaquete.reduce((total, d) => total + (d.costo || 0), 0);
+}
+
+getGanancia(): number {
+  return (this.detallePaquete[0]?.precio || 0) - this.getCostoTotalServicios();
+}
+generarPDF(id: number) {
+
+  fetch(`http://localhost:8080/Proyecto1IPC2/ReservacionServlet?id=${id}`, {
+    method: 'GET',
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(data => {
+      console.log("DATA PDF:", data);
+    const imgWidth = 180;
+
+   const contenido = `
+<div style="font-family: Arial; padding: 10px;">
+  <h2>CONSTANCIA DE RESERVACIÓN</h2>
+
+  <p><b>ID Reservación:</b> ${data?.id ?? 'N/A'}</p>
+  <p><b>Fecha creación:</b> ${data?.fechaCreacion ?? 'N/A'}</p>
+  <p><b>Fecha viaje:</b> ${data?.fechaViaje ?? 'N/A'}</p>
+
+  <hr>
+
+  <p><b>Paquete:</b> ${data?.paquete ?? 'N/A'}</p>
+  <p><b>Destino:</b> ${data?.destino ?? 'N/A'}</p>
+
+  <hr>
+
+  <p><b>Cantidad de pasajeros:</b> ${data?.candidadPersonas ?? 'N/A'}</p>
+
+  <p><b>Listado de pasajeros:</b></p>
+  <ul>
+    ${
+      data?.pasajeros
+        ? data.pasajeros.map((p: any) => `<li>${p}</li>`)
+        : '<li>No disponible</li>'
+    }
+  </ul>
+
+  <hr>
+
+  <p><b>Agente:</b> ${data?.agente ?? 'N/A'}</p>
+
+  <hr>
+
+  <p><b>Total:</b> Q${data?.cosotTotal ?? '0'}</p>
+  <p><b>Estado:</b> ${data?.estado ?? 'N/A'}</p>
+
+  ${data?.imagen ? `<img src="${data.imagen}" width="200"/>` : ''}
+</div>
+`;
+    const temp = document.createElement('div');
+    temp.innerHTML = contenido;
+    document.body.appendChild(temp);
+
+    html2canvas(temp).then(canvas => {
+
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF();
+
+     pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+      pdf.save(`Reservacion_${data.id}.pdf`);
+
+      document.body.removeChild(temp);
+    });
+
+  })
+  .catch(err => console.error(err));
+}
+
 }

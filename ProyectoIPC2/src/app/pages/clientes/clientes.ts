@@ -32,10 +32,11 @@ export class Clientes {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.accion = params['accion'];
-    });
-  }
+  this.route.queryParams.subscribe(params => {
+    this.accion = params['accion'];
+    console.log("ACCION:", this.accion);
+  });
+}
 
   guardarCliente() {
     const url = 'http://localhost:8080/Proyecto1IPC2/ClienteServlet';
@@ -152,4 +153,5 @@ buscarCliente() {
   regresar() {
     this.router.navigate(['/atencion']);
   }
+  
 }
