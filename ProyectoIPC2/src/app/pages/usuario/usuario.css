@@ -1,0 +1,154 @@
+/* FONDO GENERAL */
+.background {
+  min-height: 100vh;
+  padding: 40px;
+
+  background: radial-gradient(circle at top, #01535b, #111010);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* CONTENEDOR */
+.container {
+  width: 100%;
+  max-width: 1100px;
+  text-align: center;
+  color: white;
+}
+
+/* TITULO */
+.title {
+  margin-bottom: 40px;
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 1px;
+
+  text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+/* GRID */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  margin-top: 30px;
+}
+
+/* TARJETAS */
+.card {
+  padding: 25px;
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+
+  color: white;
+
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* CONTENIDO */
+.buttons {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* INPUTS */
+.buttons input,
+.buttons select {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+
+  background: rgba(255,255,255,0.2);
+  color: white;
+
+  outline: none;
+}
+
+/* PLACEHOLDER */
+.buttons input::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+/* SELECT */
+.buttons select {
+  cursor: pointer;
+}
+
+/* BOTONES */
+.buttons button {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #0e0e0eea, #202222);
+  color: white;
+
+  font-size: 14px;
+
+  transition: 0.3s;
+}
+
+.buttons button:hover {
+  opacity: 0.8;
+  transform: scale(1.03);
+}
+
+/* TABLA */
+table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+}
+
+/* ENCABEZADOS */
+th {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+/* FILAS */
+td {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* EFECTO HOVER FILA */
+tr:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+/* BOTON REGRESAR */
+.btn-back {
+  margin-top: 40px;
+  padding: 15px 30px;
+
+  font-size: 18px;
+  font-weight: bold;
+
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #ff4b2b, #ff416c);
+  color: white;
+
+  transition: 0.3s;
+}
+
+.btn-back:hover {
+  transform: scale(1.05);
+}

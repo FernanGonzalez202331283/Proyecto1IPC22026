@@ -8,6 +8,8 @@ import Logica.Proveedor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -76,19 +78,26 @@ public class ProveedorDAO {
     return false;
 }
     
-    public ResultSet listarProveedores() {
+   public List<Proveedor> listarProveedores() {
+        String sql = "SELECT * FROM proveedor";
+        List<Proveedor> lista = new ArrayList<>();
+        try (Connection con = ConexionBD.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-    String sql = "SELECT * FROM proveedor";
+            while (rs.next()) {
+                Proveedor p = new Proveedor();
+                p.setId(rs.getInt("id"));
+                p.setNombre(rs.getString("nombre"));
+                p.setTipo(rs.getString("tipo"));
+                p.setPais(rs.getString("pais"));
+                p.setContacto(rs.getString("contacto"));
+                lista.add(p);
+            }
 
-    try {
-        Connection con = ConexionBD.getConnection();
-        PreparedStatement ps = con.prepareStatement(sql);
-        return ps.executeQuery();
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lista;
     }
-
-    return null;
-}
 }

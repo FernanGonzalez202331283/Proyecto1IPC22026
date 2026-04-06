@@ -60,7 +60,7 @@ public class PagoServlet extends HttpServlet{
 
         String rol = (String) session.getAttribute("rol");
 
-        if (!rol.equals("ATENCION")) {
+        if (!rol.equals("ATENCION") && !rol.equals("ADMIN")) {
             out.print("{\"error\":\"Acceso denegado\"}");
             return;
         }

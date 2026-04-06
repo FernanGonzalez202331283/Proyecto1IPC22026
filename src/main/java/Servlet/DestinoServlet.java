@@ -38,7 +38,7 @@ public class DestinoServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    //================= VALIDACIÓN =================
+    //VALIDACION
     private boolean validarAcceso(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
 
@@ -57,7 +57,7 @@ public class DestinoServlet extends HttpServlet {
         return true;
     }
 
-    //================= GET (🔥 LO QUE TE FALTABA) =================
+    //GET
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -96,10 +96,15 @@ public class DestinoServlet extends HttpServlet {
         if (!validarAcceso(request, response)) return;
 
         String accion = request.getParameter("accion");
+        
+        if(accion == null){
+            out.print("{\"error\":\"Acción requerida\"}");
+            return;
+        }
 
         DestinoDAO dao = new DestinoDAO();
 
-        if (accion == null || accion.equals("crear")) {
+        if ("crear".equals(accion)) {
 
             Destino d = new Destino();
             d.setNombre(request.getParameter("nombre"));
@@ -115,14 +120,20 @@ public class DestinoServlet extends HttpServlet {
             }
 
         } else if (accion.equals("editar")) {
-
+            String idStr = request.getParameter("id");
+            
+            if (idStr == null || idStr.isEmpty()) {
+                out.print("{\"error\":\"ID requerido\"}");
+                return;
+            }
+            
             Destino d = new Destino();
             d.setId(Integer.parseInt(request.getParameter("id")));
             d.setNombre(request.getParameter("nombre"));
             d.setPais(request.getParameter("pais"));
             d.setDescripcion(request.getParameter("descripcion"));
             d.setClima(request.getParameter("clima"));
-            d.setImagen(request.getParameter("imagen"));
+            d.setImagen(request.getParameter("imagen_url"));
 
             if (dao.actualizarDestino(d)) {
                 out.print("{\"status\":\"ok\",\"mensaje\":\"Destino actualizado\"}");
@@ -131,6 +142,13 @@ public class DestinoServlet extends HttpServlet {
             }
 
         } else if (accion.equals("eliminar")) {
+            
+             String idStr = request.getParameter("id");
+
+            if (idStr == null || idStr.isEmpty()) {
+                out.print("{\"error\":\"ID requerido\"}");
+                return;
+            }
 
             int id = Integer.parseInt(request.getParameter("id"));
 
@@ -159,7 +177,7 @@ public class DestinoServlet extends HttpServlet {
         d.setPais(request.getParameter("pais"));
         d.setDescripcion(request.getParameter("descripcion"));
         d.setClima(request.getParameter("clima"));
-        d.setImagen(request.getParameter("imagen"));
+        d.setImagen(request.getParameter("imagen_url"));
 
         DestinoDAO dao = new DestinoDAO();
 

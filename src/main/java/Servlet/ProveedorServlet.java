@@ -6,6 +6,7 @@ package Servlet;
 
 import Conexion.ProveedorDAO;
 import Logica.Proveedor;
+import com.google.gson.Gson;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  *
@@ -20,112 +22,134 @@ import java.io.PrintWriter;
  */
 @WebServlet("/ProveedorServlet")
 public class ProveedorServlet extends HttpServlet{
-     private boolean validar(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void configurarCORS(HttpServletResponse response) {
+    response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+    response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+}
+      @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        configurarCORS(response);
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+    
+    // Validación de sesión y rol
+    private boolean validar(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        configurarCORS(response);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession(false);
-
         if (session == null || session.getAttribute("rol") == null) {
             response.getWriter().print("{\"error\":\"No autorizado\"}");
             return false;
         }
 
         String rol = (String) session.getAttribute("rol");
-
         if (!rol.equals("OPERACIONES") && !rol.equals("ADMIN")) {
             response.getWriter().print("{\"error\":\"Acceso denegado\"}");
             return false;
         }
-
         return true;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+   @Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
 
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
+    configurarCORS(response);
+    response.setContentType("application/json");
+    PrintWriter out = response.getWriter();
 
-        if (!validar(request, response)) return;
+    if (!validar(request, response)) return;
 
-        String accion = request.getParameter("accion");
+    try {
+        //LEER JSON
+        StringBuilder sb = new StringBuilder();
+        String line;
+
+        try (var reader = request.getReader()) {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+
+        Gson gson = new Gson();
+        Proveedor p = gson.fromJson(sb.toString(), Proveedor.class);
+
+        if (p == null || p.getAccion() == null) {
+            out.print("{\"error\":\"Acción requerida\"}");
+            return;
+        }
 
         ProveedorDAO dao = new ProveedorDAO();
-        
-        if (accion == null || accion.equals("crear")) {
+        String accion = p.getAccion();
 
-            Proveedor p = new Proveedor();
-            p.setNombre(request.getParameter("nombre"));
-            p.setTipo(request.getParameter("tipo"));
-            p.setPais(request.getParameter("pais"));
-            p.setContacto(request.getParameter("contacto"));
+        // ===== CREAR =====
+        if ("crear".equals(accion)) {
 
             if (dao.crearProveedor(p)) {
                 out.print("{\"status\":\"ok\",\"mensaje\":\"Proveedor creado\"}");
             } else {
                 out.print("{\"error\":\"No se pudo crear\"}");
             }
-        }
-        else if (accion.equals("editar")) {
 
-            Proveedor p = new Proveedor();
-            p.setId(Integer.parseInt(request.getParameter("id")));
-            p.setNombre(request.getParameter("nombre"));
-            p.setTipo(request.getParameter("tipo"));
-            p.setPais(request.getParameter("pais"));
-            p.setContacto(request.getParameter("contacto"));
+        // ===== EDITAR =====
+        } else if ("editar".equals(accion)) {
+
+            if (p.getId() == 0) {
+                out.print("{\"error\":\"ID requerido\"}");
+                return;
+            }
 
             if (dao.actualizarProveedor(p)) {
                 out.print("{\"status\":\"ok\",\"mensaje\":\"Proveedor actualizado\"}");
             } else {
                 out.print("{\"error\":\"No se pudo actualizar\"}");
             }
-        }
-        else if (accion.equals("eliminar")) {
 
-            int id = Integer.parseInt(request.getParameter("id"));
+        // ===== ELIMINAR =====
+        } else if ("eliminar".equals(accion)) {
 
-            if (dao.eliminarProveedor(id)) {
+            if (p.getId() == 0) {
+                out.print("{\"error\":\"ID requerido\"}");
+                return;
+            }
+
+            if (dao.eliminarProveedor(p.getId())) {
                 out.print("{\"status\":\"ok\",\"mensaje\":\"Proveedor eliminado\"}");
             } else {
                 out.print("{\"error\":\"No se pudo eliminar\"}");
             }
+
+        } else {
+            out.print("{\"error\":\"Acción inválida\"}");
         }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        out.print("{\"error\":\"Datos inválidos\"}");
     }
-    
+}
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
+        configurarCORS(response);
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
         ProveedorDAO dao = new ProveedorDAO();
+        Gson gson = new Gson();
 
         try {
-            var rs = dao.listarProveedores();
-
-            out.print("[");
-
-            boolean primero = true;
-
-            while (rs.next()) {
-
-                if (!primero) out.print(",");
-                primero = false;
-
-                out.print("{");
-                out.print("\"id\":" + rs.getInt("id") + ",");
-                out.print("\"nombre\":\"" + rs.getString("nombre") + "\",");
-                out.print("\"tipo\":\"" + rs.getString("tipo") + "\",");
-                out.print("\"pais\":\"" + rs.getString("pais") + "\",");
-                out.print("\"contacto\":\"" + rs.getString("contacto") + "\"");
-                out.print("}");
-            }
-
-            out.print("]");
-
+            // Ahora dao devuelve List<Proveedor>
+            List<Proveedor> lista = dao.listarProveedores();
+            out.print(gson.toJson(lista));
         } catch (Exception e) {
             e.printStackTrace();
+            out.print("{\"error\":\"Error al listar proveedores\"}");
         }
     }
 }

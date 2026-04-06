@@ -47,17 +47,18 @@ public class CancelacionDAO {
             else if (dias >= 15) porcentaje = 0.7;
             else porcentaje = 0.4;
             double reembolso = totalPagado * porcentaje;
-            
+            double perdida = totalPagado - reembolso;
             //actualizar el estado 
             String update = "UPDATE reservacion SET estado='CANCELADA' WHERE id=?";
             PreparedStatement ps3 = con.prepareStatement(update);
             ps3.setInt(1, reservacionId);
             ps3.executeUpdate();
             
-            String insert = "INSERT INTO cancelacion(reservacion_id, monto_reembolso) VALUES (?, ?)";
+            String insert = "INSERT INTO cancelacion(reservacion_id, monto_reembolso, perdida) VALUES (?, ?, ?)";
             PreparedStatement ps4 = con.prepareStatement(insert);
             ps4.setInt(1, reservacionId);
             ps4.setDouble(2, reembolso);
+            ps4.setDouble(3, perdida);
             ps4.executeUpdate();
 
             return reembolso;

@@ -1,0 +1,90 @@
+/* FONDO */
+.background {
+  min-height: 100vh;
+  padding: 40px;
+  background: radial-gradient(circle at top, #01535b, #111010);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* CONTENEDOR */
+.container {
+  width: 100%;
+  max-width: 1100px;
+  text-align: center;
+  color: white;
+}
+
+/* TITULO */
+.title {
+  margin-bottom: 40px;
+  font-size: 32px;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+/* GRID */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+/* TARJETAS */
+.card {
+  padding: 25px;
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* BOTONES */
+.buttons {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.buttons button {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #0e0e0eea, #202222);
+  color: white;
+
+  transition: 0.3s;
+}
+
+.buttons button:hover {
+  transform: scale(1.03);
+  opacity: 0.85;
+}
+
+/* LOGOUT */
+.btn-back {
+  margin-top: 40px;
+  padding: 15px 30px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #ff4b2b, #ff416c);
+  color: white;
+}
+
+.btn-back:hover {
+  transform: scale(1.05);
+}

@@ -1,9 +1,48 @@
-<div>
-  <p>AREA DE ADMINISTRADORES</p>
-</div>
-<div>
-<app-operaciones></app-operaciones>
-</div>
-<div>
-    <app-atencion></app-atencion>
+<div class="background">
+  <div class="container">
+    <h1 class="title">Panel Administrador</h1>
+
+    <div class="cards">
+
+      <div class="card">
+        <h3>Módulos</h3>
+        <div class="buttons">
+          <button (click)="irAtencion()">Atención</button>
+          <button (click)="irOperaciones()">Operaciones</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Reportes</h3>
+        <div class="buttons">
+          <button (click)="irReporte('ventas')">Ventas</button>
+          <button (click)="irReporte('cancelaciones')">Cancelaciones</button>
+          <button (click)="irReporte('ganancias')">Ganancias</button>
+          <button (click)="irReporte('topAgenteVentas')">Mejor Agente (Ventas)</button>
+          <button (click)="irReporte('topAgenteGanancias')">Mejor Agente (Ganancias)</button>
+          <button (click)="irReporte('paqueteMas')">Paquete Más Vendido</button>
+          <button (click)="irReporte('paqueteMenos')">Paquete Menos Vendido</button>
+          <button (click)="irReporte('ocupacion')">Ocupación por Destino</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Usuarios</h3>
+        <div class="buttons">
+          <button (click)="irUsuarios()">Gestionar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Carga de Datos</h3>
+        <div class="buttons">
+          <button (click)="irCargaDatos()">Subir archivo</button>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn-back" (click)="logout()">Cerrar sesión</button>
+
+  </div>
 </div>

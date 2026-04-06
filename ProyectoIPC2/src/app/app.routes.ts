@@ -11,6 +11,9 @@ import { Destinos } from './pages/destinos/destinos';
 import { Paquetes } from './pages/paquetes/paquetes';
 import { Proveedores } from './pages/proveedores/proveedores';
 import { Servicio } from './pages/servicio/servicio';
+import { Reporte } from './pages/reporte/reporte';
+import { Usuario } from './pages/usuario/usuario';
+import { CargaDatos } from './pages/carga-datos/carga-datos';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -24,5 +27,8 @@ export const routes: Routes = [
     { path: 'destinos', component: Destinos},
     { path: 'paquetes', component: Paquetes},
     { path: 'proveedores', component: Proveedores},
-    { path: 'servicio', component: Servicio}
+    { path: 'servicio', component: Servicio},
+    { path: 'reporte/:tipo', component: Reporte},
+    { path: 'usuario', component: Usuario},
+    { path: 'carga-datos', component: CargaDatos},
 ];

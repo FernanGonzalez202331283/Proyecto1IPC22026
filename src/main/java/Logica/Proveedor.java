@@ -14,7 +14,16 @@ public class Proveedor {
     private String tipo;
     private String pais;
     private String contacto;
+    private String accion;
 
+    public String getAccion() {
+        return accion;
+    }
+
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
+    
     public int getId() {
         return id;
     }

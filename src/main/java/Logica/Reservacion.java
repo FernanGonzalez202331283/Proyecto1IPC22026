@@ -4,6 +4,8 @@
  */
 package Logica;
 
+import java.util.List;
+
 /**
  *
  * @author fernan
@@ -22,6 +24,47 @@ public class Reservacion {
     private double totalPagado;
     private double precio;
     private int cupos;
+    private String imagen;
+    private String fechaCreacion;
+    private String agente;
+    private List<String> pasajeros;
+
+    public List<String> getPasajeros() {
+        return pasajeros;
+    }
+
+    public void setPasajeros(List<String> pasajeros) {
+        this.pasajeros = pasajeros;
+    }
+    
+    public String getAgente() {
+        return agente;
+    }
+
+    public void setAgente(String agente) {
+        this.agente = agente;
+    }
+    
+    
+    public String getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(String fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+    
+    
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+    
+    
 
     public double getPrecio() {
         return precio;

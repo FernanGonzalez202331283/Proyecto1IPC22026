@@ -1,0 +1,32 @@
+<h2>Reporte: {{tipo}}</h2>
+
+<input type="date" [(ngModel)]="inicio">
+<input type="date" [(ngModel)]="fin">
+
+<button (click)="generar()">Generar</button>
+
+<hr>
+
+<table border="1" *ngIf="datos.length > 0">
+  <thead>
+    <tr>
+      <th>Reservación</th>
+      <th>Fecha</th>
+      <th>Reembolso</th>
+      <th>Pérdida</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let d of datos">
+      <td>{{ d.reservacion }}</td>
+      <td>{{ d.fecha }}</td>
+      <td>{{ d.reembolso }}</td>
+      <td>{{ d.perdida }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p *ngIf="datos.length == 0">
+  No hay datos para mostrar
+</p>

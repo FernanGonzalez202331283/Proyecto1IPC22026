@@ -6,6 +6,7 @@ package Servlet;
 
 import Conexion.PaqueteDAO;
 import Logica.Paquete;
+import com.google.gson.Gson;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,81 +22,149 @@ import java.util.List;
  */
 @WebServlet("/PaqueteServlet")
 public class PaqueteServlet extends HttpServlet{
+    // cors
+     private void configurarCORS(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+     
     
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        configurarCORS(response);
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
 
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-
+    // ================= VALIDACIÓN =================
+    private boolean validarAcceso(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("rol") == null) {
-            out.print("{\"error\":\"No autorizado\"}");
-            return;
+            response.getWriter().print("{\"error\":\"No autorizado\"}");
+            return false;
         }
 
         String rol = (String) session.getAttribute("rol");
 
         if (!rol.equals("OPERACIONES") && !rol.equals("ADMIN")) {
-            out.print("{\"error\":\"Acceso denegado\"}");
-            return;
+            response.getWriter().print("{\"error\":\"Acceso denegado\"}");
+            return false;
         }
 
-        Paquete p = new Paquete();
-    
-        p.setNombre(request.getParameter("nombre"));
-        p.setDestinoId(Integer.parseInt(request.getParameter("destino_id")));
-        p.setDuracion(Integer.parseInt(request.getParameter("duracion")));
-        p.setDescripcion(request.getParameter("descripcion"));
-        p.setPrecio(Double.parseDouble(request.getParameter("precio")));
-        p.setCapacidad(Integer.parseInt(request.getParameter("capacidad")));
-
-        PaqueteDAO dao = new PaqueteDAO();
-
-        if (dao.crearPaquete(p)) {
-            out.print("{\"status\":\"ok\",\"mensaje\":\"Paquete creado\"}");
-        } else {
-            out.print("{\"error\":\"No se pudo crear\"}");
-        }
+        return true;
     }
-    
+
+    // ================= POST (JSON) =================
     @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
-    // 🔥 CORS (IMPORTANTE)
-    response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
-    response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    response.setHeader("Access-Control-Allow-Credentials", "true");
+        configurarCORS(response);
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
 
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
+        if (!validarAcceso(request, response)) return;
 
-    PrintWriter out = response.getWriter();
+        try {
+            // LEER JSON
+            StringBuilder sb = new StringBuilder();
+            String line;
 
-    PaqueteDAO dao = new PaqueteDAO();
-    List<Paquete> lista = dao.listarPaquetes();
+            try (var reader = request.getReader()) {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+            }
 
-    out.print("[");
+            Gson gson = new Gson();
+            Paquete p = gson.fromJson(sb.toString(), Paquete.class);
 
-    for (int i = 0; i < lista.size(); i++) {
-        Paquete p = lista.get(i);
+            if (p == null || p.getAccion() == null) {
+                out.print("{\"error\":\"Acción requerida\"}");
+                return;
+            }
 
-        out.print("{");
-        out.print("\"id\":" + p.getId() + ",");
-        out.print("\"nombre\":\"" + p.getNombre() + "\",");
-        out.print("\"precio\":" + p.getPrecio() + ",");
-        out.print("\"capacidad\":" + p.getCapacidad());
-        out.print("}");
+            PaqueteDAO dao = new PaqueteDAO();
+            String accion = p.getAccion();
 
-        if (i < lista.size() - 1) {
-            out.print(",");
+            // ================= ACCIONES =================
+
+            if ("crear".equals(accion)) {
+
+                if (p.getNombre() == null || p.getNombre().isEmpty()) {
+                    out.print("{\"error\":\"Nombre requerido\"}");
+                    return;
+                }
+
+                if (dao.crearPaquete(p)) {
+                    out.print("{\"status\":\"ok\",\"mensaje\":\"Paquete creado\"}");
+                } else {
+                    out.print("{\"error\":\"No se pudo crear\"}");
+                }
+
+            } else if ("editar".equals(accion)) {
+
+                if (p.getId() == 0) {
+                    out.print("{\"error\":\"ID requerido\"}");
+                    return;
+                }
+
+                if (dao.actualizarPaquete(p)) {
+                    out.print("{\"status\":\"ok\",\"mensaje\":\"Paquete actualizado\"}");
+                } else {
+                    out.print("{\"error\":\"No se pudo actualizar\"}");
+                }
+
+            } else if ("activar".equals(accion) || "desactivar".equals(accion)) {
+
+                if (p.getId() == 0) {
+                    out.print("{\"error\":\"ID requerido\"}");
+                    return;
+                }
+
+                String estado = accion.equals("activar") ? "activo" : "inactivo";
+
+                if (dao.cambiarEstadoPaquete(p.getId(), estado)) {
+                    out.print("{\"status\":\"ok\",\"mensaje\":\"Paquete " + estado + "\"}");
+                } else {
+                    out.print("{\"error\":\"No se pudo cambiar estado\"}");
+                }
+
+            } else {
+                out.print("{\"error\":\"Acción inválida\"}");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.print("{\"error\":\"Datos inválidos\"}");
         }
     }
 
-    out.print("]");
-}
+    // ================= GET =================
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        configurarCORS(response);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter out = response.getWriter();
+
+        try {
+            PaqueteDAO dao = new PaqueteDAO();
+            List<Paquete> lista = dao.listarPaquetes();
+
+            Gson gson = new Gson();
+            out.print(gson.toJson(lista));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.print("{\"error\":\"Error al obtener paquetes\"}");
+        }
+    }
 }

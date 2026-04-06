@@ -4,6 +4,7 @@
  */
 package Servlet;
 
+import Conexion.PaqueteDAO;
 import Conexion.ReservacionDAO;
 import Logica.Reservacion;
 
@@ -64,7 +65,7 @@ public class ReservacionServlet extends HttpServlet {
 
         String rol = (String) session.getAttribute("rol");
 
-        if (!rol.equals("ATENCION")) {
+       if (!rol.equals("ATENCION") && !rol.equals("ADMIN")) {
             out.print("{\"error\":\"Acceso denegado\"}");
             return;
         }
@@ -139,8 +140,17 @@ public class ReservacionServlet extends HttpServlet {
 
             ReservacionDAO dao = new ReservacionDAO();
 
-            if (dao.crearReservacion(r)) {
-                out.print("{\"status\":\"ok\",\"mensaje\":\"Reservacion creada\"}");
+            int id = dao.crearReservacion(r);
+
+            if (id > 0) {
+
+                JsonObject resp = new JsonObject();
+                resp.addProperty("status", "ok");
+                resp.addProperty("mensaje", "Reservacion creada");
+                resp.addProperty("idReservacion", id);
+
+                out.print(gson.toJson(resp));
+
             } else {
                 out.print("{\"error\":\"No se pudo crear\"}");
             }
@@ -181,6 +191,23 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
 
             var lista = dao.obtenerPorCliente(dpi);
             out.print(gson.toJson(lista));
+            return;
+        }
+        // DETALLE DEL PAQUETE
+        if ("detallePaquete".equals(accion)) {
+
+            String paqueteIdStr = request.getParameter("paqueteId");
+
+            if (paqueteIdStr == null) {
+                out.print("{\"error\":\"paqueteId requerido\"}");
+                return;
+            }
+
+            int paqueteId = Integer.parseInt(paqueteIdStr);
+
+            PaqueteDAO daoP = new PaqueteDAO();
+            var detalle = daoP.obtenerDetallePaquete(paqueteId);
+            out.print(gson.toJson(detalle));
             return;
         }
 

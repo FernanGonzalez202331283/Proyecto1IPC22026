@@ -1,3 +1,4 @@
+/home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/AlertaDemanda.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/CancelacionDAO.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/ClienteDAO.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/ConexionBD.java
@@ -6,11 +7,13 @@
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/PagoDAO.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/PaqueteDAO.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/ProveedorDAO.java
+/home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/ReporteDAO.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/ReservacionDAO.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/ServicioDAO.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Conexion/UsuarioDAO.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Logica/Cliente.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Logica/Destino.java
+/home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Logica/DetallePaquete.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Logica/Pago.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Logica/Paquete.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Logica/Proveedor.java
@@ -31,6 +34,7 @@
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/PaquetePorDestinoServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/PaqueteServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/ProveedorServlet.java
+/home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/ReporteServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/ReservacionServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/ReservacionesDiaServlet.java
 /home/fernan/NetBeansProjects/Proyecto1IPC2/src/main/java/Servlet/ServicioServlet.java

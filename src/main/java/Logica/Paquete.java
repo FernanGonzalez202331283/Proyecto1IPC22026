@@ -17,7 +17,17 @@ public class Paquete {
     private double precio;
     private int capacidad;
     private String estado;
+    private String accion;
 
+    public String getAccion() {
+        return accion;
+    }
+
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
+    
+    
     public int getId() {
         return id;
     }

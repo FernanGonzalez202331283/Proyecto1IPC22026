@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class ReservacionDAO {
 
-    public boolean crearReservacion(Reservacion r) {
+    public int crearReservacion(Reservacion r) {
 
         String sql = "INSERT INTO reservacion(fecha_viaje, paquete_id, cantidad_personas, usuario_id, costo_total, estado) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -47,50 +47,83 @@ public class ReservacionDAO {
                 ps2.setString(2, dpi);
                 ps2.executeUpdate();
             }
-            return true;
+            return idReservacion;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return false;
+        return -1;
     }
 
     public Reservacion obtenerPorId(int id) {
 
-        String sql = "SELECT r.*, p.nombre AS paquete_nombre, d.nombre AS destino_nombre "
-                + "FROM reservacion r "
-                + "JOIN paquete p ON r.paquete_id = p.id "
-                + "JOIN destino d ON p.destino_id = d.id "
-                + "WHERE r.id=?";
+       String sql = "SELECT r.*, " +
+            "p.nombre AS paquete_nombre, " +
+            "d.nombre AS destino_nombre, " +
+            "d.imagen_url, " +
+            "u.username AS agente " +
+            "FROM reservacion r " +
+            "JOIN paquete p ON r.paquete_id = p.id " +
+            "JOIN destino d ON p.destino_id = d.id " +
+            "JOIN usuario u ON r.usuario_id = u.id " +
+            "WHERE r.id=?";
 
-        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+    try (Connection con = ConexionBD.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
+        if (rs.next()) {
 
-                Reservacion r = new Reservacion();
+            Reservacion r = new Reservacion();
 
-                r.setId(rs.getInt("id"));
-                r.setFechaViaje(rs.getString("fecha_viaje"));
-                r.setCandidadPersonas(rs.getInt("cantidad_personas"));
-                r.setCosotTotal(rs.getDouble("costo_total"));
-                r.setEstado(rs.getString("estado"));
-                r.setPaqueteId(rs.getInt("paquete_id"));
+            // DATOS PRINCIPALES
+            r.setId(rs.getInt("id"));
+            r.setFechaViaje(rs.getString("fecha_viaje"));
+            r.setFechaCreacion(rs.getString("fecha_creacion")); // NUEVO
+            r.setCandidadPersonas(rs.getInt("cantidad_personas"));
+            r.setCosotTotal(rs.getDouble("costo_total"));
+            r.setEstado(rs.getString("estado"));
+            r.setPaqueteId(rs.getInt("paquete_id"));
 
-                //NUEVO
-                r.setPaquete(rs.getString("paquete_nombre"));
-                r.setDestino(rs.getString("destino_nombre"));
+            // INFO EXTRA
+            r.setPaquete(rs.getString("paquete_nombre"));
+            r.setDestino(rs.getString("destino_nombre"));
+            r.setImagen(rs.getString("imagen_url"));
+            r.setAgente(rs.getString("agente"));
 
-                return r;
+            // =========================
+            // AQUÍ AGREGAS PASAJEROS
+            // =========================
+            String sqlClientes = "SELECT c.nombre, c.dpi " +
+                                 "FROM reservacion_cliente rc " +
+                                 "JOIN cliente c ON rc.cliente_dpi = c.dpi " +
+                                 "WHERE rc.reservacion_id = ?";
+
+            PreparedStatement psClientes = con.prepareStatement(sqlClientes);
+            psClientes.setInt(1, id);
+
+            ResultSet rsClientes = psClientes.executeQuery();
+
+            List<String> pasajeros = new ArrayList<>();
+
+            while (rsClientes.next()) {
+                String nombre = rsClientes.getString("nombre");
+                String dpi = rsClientes.getString("dpi");
+                pasajeros.add(nombre + " - " + dpi);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            r.setPasajeros(pasajeros);
+
+            return r;
         }
 
-        return null;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
     }
 
     public List<Reservacion> obtenerPorCliente(String dpi) {

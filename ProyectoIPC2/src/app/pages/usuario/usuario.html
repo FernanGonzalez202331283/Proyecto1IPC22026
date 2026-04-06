@@ -1,0 +1,50 @@
+<div class="background">
+  <div class="container">
+
+    <h1 class="title">Gestión de Usuarios</h1>
+
+    <div class="cards">
+
+      <!-- CREAR USUARIO -->
+      <div class="card">
+        <h3>Crear Usuario</h3>
+
+        <div class="buttons">
+          <input type="text" placeholder="Username" [(ngModel)]="nuevo.username">
+          <input type="password" placeholder="Password" [(ngModel)]="nuevo.password">
+
+          <select [(ngModel)]="nuevo.rol">
+            <option value="ADMIN">ADMIN</option>
+            <option value="ATENCION">ATENCION</option>
+            <option value="OPERACIONES">OPERACIONES</option>
+          </select>
+
+          <button (click)="crearUsuario()">Crear</button>
+        </div>
+      </div>
+
+      <!-- LISTA -->
+      <div class="card">
+        <h3>Usuarios</h3>
+
+        <table>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Rol</th>
+          </tr>
+
+          <tr *ngFor="let u of listaUsuarios">
+            <td>{{u.id}}</td>
+            <td>{{u.username}}</td>
+            <td>{{u.rol}}</td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+
+    <button class="btn-back" (click)="regresar()">Regresar</button>
+
+  </div>
+</div>

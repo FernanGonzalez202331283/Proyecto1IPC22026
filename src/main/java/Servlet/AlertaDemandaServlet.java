@@ -4,7 +4,9 @@
  */
 package Servlet;
 
+import Conexion.AlertaDemanda;
 import Conexion.PaqueteDAO;
+import com.google.gson.Gson;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.util.List;
 
 /**
  *
@@ -20,11 +23,13 @@ import java.sql.ResultSet;
  */
 @WebServlet("/AlertaDemandaServlet")
 public class AlertaDemandaServlet extends HttpServlet {
-    @Override
+  @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         PrintWriter out = response.getWriter();
 
         HttpSession session = request.getSession(false);
@@ -41,30 +46,16 @@ public class AlertaDemandaServlet extends HttpServlet {
             return;
         }
 
-        PaqueteDAO dao = new PaqueteDAO();
-        ResultSet rs = dao.obtenerAltaDemanda();
-
-        out.print("[");
-
-        boolean primero = true;
-
         try {
-            while (rs.next()) {
+            PaqueteDAO dao = new PaqueteDAO();
+            List<AlertaDemanda> lista = dao.obtenerAltaDemanda();
 
-                if (!primero) out.print(",");
-                primero = false;
+            Gson gson = new Gson();
+            out.print(gson.toJson(lista));
 
-                out.print("{");
-                out.print("\"paquete\":\"" + rs.getString("nombre") + "\",");
-                out.print("\"ocupados\":" + rs.getInt("ocupados") + ",");
-                out.print("\"capacidad\":" + rs.getInt("capacidad") + ",");
-                out.print("\"estado\":\"ALTA DEMANDA\"");
-                out.print("}");
-            }
         } catch (Exception e) {
             e.printStackTrace();
+            out.print("{\"error\":\"Error al obtener alertas\"}");
         }
-
-        out.print("]");
     }
 }
