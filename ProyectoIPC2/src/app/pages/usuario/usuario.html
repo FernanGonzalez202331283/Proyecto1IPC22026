@@ -28,18 +28,46 @@
         <h3>Usuarios</h3>
 
         <table>
-          <tr>
-            <th>ID</th>
-            <th>Usuario</th>
-            <th>Rol</th>
-          </tr>
+  <tr>
+    <th>ID</th>
+    <th>Usuario</th>
+    <th>Rol</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+  </tr>
 
-          <tr *ngFor="let u of listaUsuarios">
-            <td>{{u.id}}</td>
-            <td>{{u.username}}</td>
-            <td>{{u.rol}}</td>
-          </tr>
-        </table>
+  <tr *ngFor="let u of listaUsuarios">
+    <td>{{u.id}}</td>
+    <td>{{u.username}}</td>
+
+    <!-- CAMBIAR ROL -->
+    <td>
+      <select [(ngModel)]="u.rol" (change)="cambiarRol(u)">
+        <option value="ADMIN">ADMIN</option>
+        <option value="ATENCION">ATENCION</option>
+        <option value="OPERACIONES">OPERACIONES</option>
+      </select>
+    </td>
+
+    <!-- ESTADO -->
+    <td>
+      <span [ngClass]="u.estado ? 'activo' : 'inactivo'">
+        {{ u.estado ? 'Activo' : 'Inactivo' }}
+      </span>
+    </td>
+
+    <!-- ACTIVAR / DESACTIVAR -->
+    <td>
+      <button *ngIf="u.estado" (click)="cambiarEstado(u, false)">
+        Desactivar
+      </button>
+
+      <button *ngIf="!u.estado" (click)="cambiarEstado(u, true)">
+        Activar
+      </button>
+    </td>
+  </tr>
+</table>
       </div>
 
     </div>

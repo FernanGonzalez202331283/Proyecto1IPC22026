@@ -37,20 +37,24 @@ public class UsuarioDAO {
         ArrayList<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM usuario";
 
-        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection con = ConexionBD.getConnection(); 
+         PreparedStatement ps = con.prepareStatement(sql); 
+         ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                Usuario u = new Usuario();
-                u.setId(rs.getInt("id"));
-                u.setUsername(rs.getString("username"));
-                u.setRol(rs.getString("rol"));
-                lista.add(u);
-            }
+        while (rs.next()) {
+            Usuario u = new Usuario();
+            u.setId(rs.getInt("id"));
+            u.setUsername(rs.getString("username"));
+            u.setRol(rs.getString("rol"));
+            u.setEstado(rs.getBoolean("estado"));
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            lista.add(u);
         }
-        return lista;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return lista;
     }
 
     public boolean existeUsuario(String username) {
@@ -85,4 +89,38 @@ public class UsuarioDAO {
         }
         return -1;
     }
+    public boolean cambiarRol(int id, String nuevoRol) {
+
+    String sql = "UPDATE usuario SET rol=? WHERE id=?";
+
+    try (Connection con = ConexionBD.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, nuevoRol);
+        ps.setInt(2, id);
+
+        return ps.executeUpdate() > 0;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+    public boolean cambiarEstado(int id, boolean estado) {
+
+    String sql = "UPDATE usuario SET estado=? WHERE id=?";
+
+    try (Connection con = ConexionBD.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setBoolean(1, estado);
+        ps.setInt(2, id);
+
+        return ps.executeUpdate() > 0;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 }

@@ -7,20 +7,38 @@ import { Observable } from 'rxjs';
 })
 export class UsuarioService {
 
-  private url = 'http://localhost:8080/Proyecto1IPC2/UsuarioServlet';
+ private url = 'http://localhost:8080/Proyecto1IPC2/UsuarioServlet';
 
   constructor(private http: HttpClient) {}
 
   listar(): Observable<any> {
-    return this.http.get(this.url, { withCredentials: true });
-  }
+  return this.http.get(this.url, { withCredentials: true });
+}
 
-  crear(usuario: any): Observable<any> {
-    const body = new HttpParams()
-      .set('username', usuario.username)
-      .set('password', usuario.password)
-      .set('rol', usuario.rol);
+ crear(usuario: any): Observable<any> {
+  const body = new HttpParams()
+    .set('accion', 'crear') 
+    .set('username', usuario.username)
+    .set('password', usuario.password)
+    .set('rol', usuario.rol);
 
-    return this.http.post(this.url, body, { withCredentials: true });
-  }
+  return this.http.post(this.url, body, { withCredentials: true });
+}
+
+cambiarRol(id: number, rol: string) {
+  const body = new HttpParams()
+    .set('accion', 'cambiarRol') 
+    .set('id', id)
+    .set('rol', rol);
+
+  return this.http.post(this.url, body, { withCredentials: true });
+}
+
+cambiarEstado(id: number, estado: boolean) {
+  const body = new HttpParams()
+    .set('accion', estado ? 'activar' : 'desactivar') 
+    .set('id', id);
+
+  return this.http.post(this.url, body, { withCredentials: true });
+}
 }
