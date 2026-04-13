@@ -14,7 +14,7 @@ import { Servicio } from './pages/servicio/servicio';
 import { Reporte } from './pages/reporte/reporte';
 import { Usuario } from './pages/usuario/usuario';
 import { CargaDatos } from './pages/carga-datos/carga-datos';
-
+import { Redirect } from './pages/redirect/redirect';
 export const routes: Routes = [
     { path: '', component: LoginComponent },
     { path: 'admin', component: Admin },
@@ -31,4 +31,5 @@ export const routes: Routes = [
     { path: 'reporte/:tipo', component: Reporte},
     { path: 'usuario', component: Usuario},
     { path: 'carga-datos', component: CargaDatos},
+    { path: '**', component: Redirect }
 ];

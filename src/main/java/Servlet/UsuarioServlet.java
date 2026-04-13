@@ -6,6 +6,7 @@ package Servlet;
 
 import Conexion.UsuarioDAO;
 import Logica.Usuario;
+import com.google.gson.Gson;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,8 +20,8 @@ import java.io.PrintWriter;
  * @author fernan
  */
 @WebServlet("/UsuarioServlet")
-public class UsuarioServlet extends HttpServlet{
-   
+public class UsuarioServlet extends HttpServlet {
+
     private void configurarCORS(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -42,29 +43,13 @@ public class UsuarioServlet extends HttpServlet{
 
         configurarCORS(response);
         response.setContentType("application/json");
-
+        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
         UsuarioDAO dao = new UsuarioDAO();
         var lista = dao.listarUsuarios();
-
-        String json = "[";
-
-        for (int i = 0; i < lista.size(); i++) {
-            Usuario u = lista.get(i);
-
-            json += "{"
-                    + "\"id\":" + u.getId() + ","
-                    + "\"username\":\"" + u.getUsername() + "\","
-                    + "\"rol\":\"" + u.getRol() + "\""
-                    + "}";
-
-            if (i < lista.size() - 1) json += ",";
-        }
-
-        json += "]";
-
-        out.print(json);
+        Gson gson = new Gson();
+        out.print(gson.toJson(lista));
     }
 
     // CREAR USUARIO
@@ -73,7 +58,9 @@ public class UsuarioServlet extends HttpServlet{
             throws IOException {
 
         configurarCORS(response);
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
         PrintWriter out = response.getWriter();
 
@@ -84,10 +71,9 @@ public class UsuarioServlet extends HttpServlet{
             return;
         }
 
-        String rol = ((String) session.getAttribute("rol")).toLowerCase();
+        String rol = (String) session.getAttribute("rol");
 
-        // IMPORTANTE PARA ADMIN
-        if (!rol.equals("admin")) {
+        if (!"ADMIN".equals(rol)) {
             out.print("{\"status\":\"error\",\"mensaje\":\"Acceso denegado\"}");
             return;
         }
@@ -96,12 +82,35 @@ public class UsuarioServlet extends HttpServlet{
         String password = request.getParameter("password");
         String rolNuevo = request.getParameter("rol");
 
+        //VALIDACIONES
+        if (username == null || username.trim().isEmpty()) {
+            out.print("{\"status\":\"error\",\"mensaje\":\"Username requerido\"}");
+            return;
+        }
+
+        if (password == null || password.length() < 6) {
+            out.print("{\"status\":\"error\",\"mensaje\":\"Password minimo 6 caracteres\"}");
+            return;
+        }
+
+        if (rolNuevo == null || (!rolNuevo.equals("ADMIN")
+                && !rolNuevo.equals("OPERACIONES")
+                && !rolNuevo.equals("ATENCION"))) {
+            out.print("{\"status\":\"error\",\"mensaje\":\"Rol invalido\"}");
+            return;
+        }
+
+        UsuarioDAO dao = new UsuarioDAO();
+
+        if (dao.existeUsuario(username)) {
+            out.print("{\"status\":\"error\",\"mensaje\":\"Usuario ya existe\"}");
+            return;
+        }
+
         Usuario u = new Usuario();
         u.setUsername(username);
         u.setPassword(password);
         u.setRol(rolNuevo);
-
-        UsuarioDAO dao = new UsuarioDAO();
 
         if (dao.crearUsuario(u)) {
             out.print("{\"status\":\"ok\",\"mensaje\":\"Usuario creado\"}");
@@ -109,4 +118,5 @@ public class UsuarioServlet extends HttpServlet{
             out.print("{\"status\":\"error\",\"mensaje\":\"No se pudo crear\"}");
         }
     }
+
 }

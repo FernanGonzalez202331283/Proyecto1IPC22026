@@ -1,127 +1,108 @@
 <div class="background">
-
   <div class="container">
     <div class="content">
       <ng-container [ngSwitch]="accion">
+        <!--  HISTORIAL  -->
+        <div *ngSwitchCase="'historial'" class="historial-container">
+          <h2>Historial de Reservaciones</h2>
+          <!-- BUSCADOR -->
+          <div class="buscador">
+            <input type="text" [(ngModel)]="dpiBuscar" placeholder="Ingrese DPI" />
 
-        <!-- ================= HISTORIAL ================= -->
-<div *ngSwitchCase="'historial'" class="historial-container">
-    <h2>Historial de Reservaciones</h2>
-  <!-- BUSCADOR -->
-  <div class="buscador">
-    <input 
-      type="text" 
-      [(ngModel)]="dpiBuscar" 
-      placeholder="Ingrese DPI"
-    >
+            <button (click)="cargarHistorial()">Buscar</button>
+          </div>
 
-    <button (click)="cargarHistorial()">
-      Buscar
-    </button>
-  </div>
+          <!-- TABLA -->
+          <table *ngIf="historial.length > 0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Destino</th>
+                <th>Paquete</th>
+                <th>Fecha</th>
+                <th>Personas</th>
+                <th>Total</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
 
-  <!-- TABLA -->
-  <table *ngIf="historial.length > 0">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Destino</th>
-        <th>Paquete</th>
-        <th>Fecha</th>
-        <th>Personas</th>
-        <th>Total</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
+            <tbody>
+              <tr *ngFor="let r of historial">
+                <td>{{ r.id }}</td>
+                <td>{{ r.destino }}</td>
+                <td>{{ r.paquete }}</td>
+                <td>{{ r.fechaViaje }}</td>
+                <td>{{ r.candidadPersonas }}</td>
+                <td>Q{{ r.cosotTotal }}</td>
+                <td
+                  [ngClass]="{
+                    pendiente: r.estado === 'PENDIENTE',
+                    confirmado: r.estado === 'CONFIRMADA',
+                  }"
+                >
+                  {{ r.estado }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-    <tbody>
-      <tr *ngFor="let r of historial">
-        <td>{{ r.id }}</td>
-        <td>{{ r.destino }}</td>
-        <td>{{ r.paquete }}</td>
-        <td>{{ r.fechaViaje }}</td>
-        <td>{{ r.candidadPersonas }}</td>
-        <td>Q{{ r.cosotTotal }}</td>
-        <td 
-          [ngClass]="{
-            'pendiente': r.estado === 'PENDIENTE',
-            'confirmado': r.estado === 'CONFIRMADA'
-          }">
-          {{ r.estado }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          <!-- MENSAJE -->
+          <p *ngIf="historial.length === 0">No hay reservaciones registradas.</p>
+        </div>
 
-  <!-- MENSAJE -->
-  <p *ngIf="historial.length === 0">
-    No hay reservaciones registradas.
-  </p>
-
-</div>
-
-        <!-- ================= CREAR ================= -->
+        <!--  CREAR  -->
         <div *ngSwitchCase="'crear'" class="form-container">
-
           <h2>Crear Reservación</h2>
 
           <!-- PAQUETE -->
           <label>Paquete:</label>
-          <select [(ngModel)]="paqueteSeleccionado" (change)="calcularCosto(); cargarDetallePaquete()">
+          <select
+            [(ngModel)]="paqueteSeleccionado"
+            (change)="calcularCosto(); cargarDetallePaquete()"
+          >
             <option [ngValue]="null">Seleccione un paquete</option>
             <option *ngFor="let p of paquetes" [ngValue]="p">
-              {{p.nombre}} - Q{{p.precio}}
+              {{ p.nombre }} - Q{{ p.precio }}
             </option>
           </select>
           <div *ngIf="detallePaquete.length > 0" class="detalle-paquete">
+            <h3>Detalle del paquete</h3>
+            <img *ngIf="detallePaquete[0].imagen" [src]="detallePaquete[0].imagen" width="300" />
+            <p><strong>Destino:</strong> {{ detallePaquete[0].destino }}</p>
+            <p><strong>Duración:</strong> {{ detallePaquete[0].duracion }} días</p>
 
-          <h3>Detalle del paquete</h3>
-             <img 
-            *ngIf="detallePaquete[0].imagen" 
-            [src]="detallePaquete[0].imagen" 
-            width="300"
-          >
-          <p><strong>Destino:</strong> {{ detallePaquete[0].destino }}</p>
-          <p><strong>Duración:</strong> {{ detallePaquete[0].duracion }} días</p>
-
-          <h4>Incluye:</h4>
-          <ul>
-            <li *ngFor="let d of detallePaquete">
-              {{ d.servicio }} ({{ d.proveedor }}) → Q{{ d.costo }}
-            </li>
-          </ul>
-          <p><strong>Precio venta:</strong> Q{{ detallePaquete[0].precio }}</p>
-          <p><strong>Costo total:</strong> Q{{ getCostoTotalServicios() }}</p>
-          <p><strong>Ganancia:</strong> Q{{ getGanancia() }}</p>
-        </div>
+            <h4>Incluye:</h4>
+            <ul>
+              <li *ngFor="let d of detallePaquete">
+                {{ d.servicio }} ({{ d.proveedor }}) → Q{{ d.costo }}
+              </li>
+            </ul>
+            <p><strong>Precio venta:</strong> Q{{ detallePaquete[0].precio }}</p>
+            <p><strong>Costo total:</strong> Q{{ getCostoTotalServicios() }}</p>
+            <p><strong>Ganancia:</strong> Q{{ getGanancia() }}</p>
+          </div>
 
           <!-- FECHA -->
           <label>Fecha de viaje:</label>
-          <input type="date" [(ngModel)]="fecha_viaje">
+          <input type="date" [(ngModel)]="fecha_viaje" />
 
           <!-- PASAJEROS -->
           <h3>Pasajeros</h3>
 
           <div class="pasajero" *ngFor="let dpi of dpis; let i = index; trackBy: trackByIndex">
+            <input type="text" [(ngModel)]="dpis[i]" placeholder="DPI" />
 
-            <input type="text" [(ngModel)]="dpis[i]" placeholder="DPI">
-
-            <button type="button" class="buscar" (click)="buscarCliente(i)">
-              Buscar
-            </button>
+            <button type="button" class="buscar" (click)="buscarCliente(i)">Buscar</button>
 
             <span class="cliente-info" *ngIf="clientes[i]?.nombre">
-              {{clientes[i].nombre}}
+              {{ clientes[i].nombre }}
             </span>
 
             <span class="cliente-error" *ngIf="!clientes[i]?.nombre && dpis[i]">
               No encontrado
             </span>
 
-            <button type="button" class="eliminar" (click)="eliminarPasajero(i)">
-              X
-            </button>
-
+            <button type="button" class="eliminar" (click)="eliminarPasajero(i)">X</button>
           </div>
 
           <button type="button" class="agregar" (click)="agregarPasajero()">
@@ -131,108 +112,90 @@
           <!-- RESUMEN -->
           <div class="resumen">
             <h3>Resumen</h3>
-            <p><strong>Pasajeros:</strong> {{cantidad}}</p>
-            <p><strong>Total:</strong> Q{{costo}}</p>
+            <p><strong>Pasajeros:</strong> {{ cantidad }}</p>
+            <p><strong>Total:</strong> Q{{ costo }}</p>
           </div>
 
           <!-- CONFIRMAR -->
-          <button class="confirmar" (click)="crearReservacion()">
-            Confirmar Reservación
-          </button>
-
+          <button class="confirmar" (click)="crearReservacion()">Confirmar Reservación</button>
         </div>
-      <!-- ================= DISPONIBLES ================= -->
-<div *ngSwitchCase="'disponibles'" class="disponibles-container">
+        <!--  DISPONIBLES  -->
+        <div *ngSwitchCase="'disponibles'" class="disponibles-container">
+          <h2>Reservaciones Disponibles</h2>
 
-  <h2>Reservaciones Disponibles</h2>
+          <!-- FILTRO SOLO FECHA -->
+          <div class="buscador">
+            <input type="date" [(ngModel)]="fechaBuscar" />
 
-  <!-- FILTRO SOLO FECHA -->
-  <div class="buscador">
-    
-    <input type="date" [(ngModel)]="fechaBuscar">
+            <button (click)="cargarDisponibles()">Buscar</button>
+          </div>
 
-    <button (click)="cargarDisponibles()">
-      Buscar
-    </button>
+          <!-- RESULTADOS -->
+          <p *ngIf="disponibles.length > 0" class="resultado-info">
+            {{ disponibles.length }} resultados encontrados
+          </p>
 
-  </div>
+          <!-- TABLA -->
+          <table *ngIf="disponibles.length > 0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Destino</th>
+                <th>Paquete</th>
+                <th>Fecha</th>
+                <th>Cupos</th>
+                <th>Precio</th>
+              </tr>
+            </thead>
 
-  <!-- RESULTADOS -->
-  <p *ngIf="disponibles.length > 0" class="resultado-info">
-    {{ disponibles.length }} resultados encontrados
-  </p>
+            <tbody>
+              <tr *ngFor="let r of disponibles">
+                <td>{{ r.id }}</td>
+                <td>{{ r.destino }}</td>
+                <td>{{ r.paquete }}</td>
+                <td>{{ r.fechaViaje }}</td>
+                <td>{{ r.cupos }}</td>
+                <td>Q{{ r.precio }}</td>
+              </tr>
+            </tbody>
+          </table>
 
-  <!-- TABLA -->
-  <table *ngIf="disponibles.length > 0">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Destino</th>
-        <th>Paquete</th>
-        <th>Fecha</th>
-        <th>Cupos</th>
-        <th>Precio</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let r of disponibles">
-        <td>{{ r.id }}</td>
-        <td>{{ r.destino }}</td>
-        <td>{{ r.paquete }}</td>
-        <td>{{ r.fechaViaje }}</td>
-        <td>{{ r.cupos }}</td>
-        <td>Q{{ r.precio }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p *ngIf="disponibles.length === 0">
-    No hay reservaciones disponibles.
-  </p>
-</div>
- <!-- ================= HOY ================= -->
-  <div *ngSwitchCase="'hoy'" class="disponibles-container">
-
-    <!-- BOTÓN PARA CARGAR HOY -->
-    <button class="btn-hoy" (click)="mostrarHoy()">ver reservaciones del dia de hoy</button>
-    <!-- TABLA -->
-      <h2>Reservaciones del Día</h2>
-    <table *ngIf="disponibles.length > 0">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Destino</th>
-          <th>Paquete</th>
-          <th>Fecha Viaje</th>
-          <th>Personas</th>
-          <th>Total</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let r of disponibles">
-          <td>{{ r.id }}</td>
-          <td>{{ r.destino }}</td>
-          <td>{{ r.paquete }}</td>
-          <td>{{ r.fechaViaje }}</td>
-          <td>{{ r.candidadPersonas }}</td>
-          <td>Q{{ r.cosotTotal }}</td>
-          <td>{{ r.estado }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-
+          <p *ngIf="disponibles.length === 0">No hay reservaciones disponibles.</p>
+        </div>
+        <!--  HOY  -->
+        <div *ngSwitchCase="'hoy'" class="disponibles-container">
+          <!-- BOTÓN PARA CARGAR HOY -->
+          <button class="btn-hoy" (click)="mostrarHoy()">ver reservaciones del dia de hoy</button>
+          <!-- TABLA -->
+          <h2>Reservaciones del Día</h2>
+          <table *ngIf="disponibles.length > 0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Destino</th>
+                <th>Paquete</th>
+                <th>Fecha Viaje</th>
+                <th>Personas</th>
+                <th>Total</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let r of disponibles">
+                <td>{{ r.id }}</td>
+                <td>{{ r.destino }}</td>
+                <td>{{ r.paquete }}</td>
+                <td>{{ r.fechaViaje }}</td>
+                <td>{{ r.candidadPersonas }}</td>
+                <td>Q{{ r.cosotTotal }}</td>
+                <td>{{ r.estado }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </ng-container>
-
     </div>
     <!-- BOTÓN REGRESAR GLOBAL -->
-    <button class="btn-regresar" (click)="regresar()">
-      Regresar
-    </button>
-
+    <button class="btn-regresar" (click)="regresar()">Regresar</button>
   </div>
-
 </div>

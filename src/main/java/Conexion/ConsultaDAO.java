@@ -105,38 +105,38 @@ public class ConsultaDAO {
         }
         return null;
     }
+
     public boolean editarPaquete(int id, String nombre, double precio) {
-    String sql = "UPDATE paquete SET nombre=?, precio=? WHERE id=?";
+        String sql = "UPDATE paquete SET nombre=?, precio=? WHERE id=?";
 
-    try (Connection con = ConexionBD.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setString(1, nombre);
-        ps.setDouble(2, precio);
-        ps.setInt(3, id);
+            ps.setString(1, nombre);
+            ps.setDouble(2, precio);
+            ps.setInt(3, id);
 
-        return ps.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
-    return false;
-}
+
     public boolean desactivarPaquete(int id) {
 
-    String sql = "UPDATE paquete SET estado='INACTIVO' WHERE id=?";
+        String sql = "UPDATE paquete SET estado='INACTIVO' WHERE id=?";
 
-    try (Connection con = ConexionBD.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setInt(1, id);
+            ps.setInt(1, id);
 
-        return ps.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
-
-    return false;
-}
 }

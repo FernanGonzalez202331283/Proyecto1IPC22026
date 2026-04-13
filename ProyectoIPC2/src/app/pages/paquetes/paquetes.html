@@ -1,109 +1,158 @@
 <div class="background">
-
   <div class="container">
     <div class="content">
-
       <ng-container [ngSwitch]="accion">
-
-        <!-- ===== MENÚ ===== -->
+        <!-- MENU -->
         <div class="top-bar" *ngSwitchCase="'menu'">
-          <button (click)="irPaquetes('crear')">+ Crear</button>
-          <button (click)="irPaquetes('editar')">✏️ Editar</button>
+          <button (click)="irPaquetes('crear')">Crear</button>
+          <button (click)="irPaquetes('editar')">Editar</button>
           <button (click)="irPaquetes('desactivar')">Desactivar</button>
         </div>
 
-        <!-- ===== CREAR ===== -->
+        <!-- CREAR -->
         <div *ngSwitchCase="'crear'" class="formulario">
           <h2>Crear Paquete</h2>
 
-          <input [(ngModel)]="paquete.nombre" placeholder="Nombre" />
+          <div class="input-group">
+            <input [(ngModel)]="paquete.nombre" required />
+            <label>Nombre</label>
+          </div>
 
-          <input type="number" [(ngModel)]="paquete.destinoId" placeholder="ID del destino" />
+          <div class="input-group">
+            <label class="label-fijo">Destino</label>
+            <select [(ngModel)]="paquete.destinoId">
+              <option [ngValue]="null" disabled>Seleccione un destino</option>
+              <option *ngFor="let d of destinos" [ngValue]="d.id">
+                {{ d.nombre }}
+              </option>
+            </select>
+          </div>
 
-          <input type="number" [(ngModel)]="paquete.duracion" placeholder="Duración (días)" />
+          <div class="input-group">
+            <input type="number" [(ngModel)]="paquete.duracion" placeholder="Duración (días)" />
+            <label>Duración (días)</label>
+          </div>
 
-          <input [(ngModel)]="paquete.descripcion" placeholder="Descripción" />
+          <div class="input-group">
+            <input [(ngModel)]="paquete.descripcion" placeholder="Descripción" />
+            <label>Descripción</label>
+          </div>
 
-          <input type="number" [(ngModel)]="paquete.precio" placeholder="Precio" />
+          <div class="input-group">
+            <input type="number" [(ngModel)]="paquete.precio" placeholder="Precio" />
+            <label>Precio</label>
+          </div>
 
-          <input type="number" [(ngModel)]="paquete.capacidad" placeholder="Capacidad" />
+          <div class="input-group">
+            <input type="number" [(ngModel)]="paquete.capacidad" placeholder="Capacidad" />
+            <label>Capacidad</label>
+          </div>
 
-          <button class="btn-save" (click)="crearPaquete()">
-            Guardar
-          </button>
-           <!-- MENSAJE -->
-      <p class="mensaje" *ngIf="mensaje">
-        {{ mensaje }}
-      </p>
+          <button class="btn-save" (click)="crearPaquete()">Guardar</button>
+          <!-- MENSAJE -->
+          <p class="mensaje" *ngIf="mensaje">
+            {{ mensaje }}
+          </p>
         </div>
 
-        <!-- ===== EDITAR ===== -->
+        <!-- EDITAR -->
         <div *ngSwitchCase="'editar'" class="formulario">
           <h2>Editar Paquete</h2>
+          <div class="input-group">
+            <label class="label-fijo">Seleccionar Paquete</label>
+            <select [(ngModel)]="paqueteSeleccionadoId" (change)="cargarPaquete()">
+              <option [ngValue]="null" disabled>Seleccione un paquete</option>
+              <option *ngFor="let p of paquetes" [ngValue]="p.id">
+                {{ p.nombre }} - Q{{ p.precio }}
+              </option>
+            </select>
+          </div>
+          <div class="input-group">
+            <input [(ngModel)]="paquete.nombre" placeholder="Nombre" />
+            <label>Nombre</label>
+          </div>
 
-          <input type="number" [(ngModel)]="paquete.id" placeholder="ID del paquete" />
+          <div class="input-group">
+            <select [(ngModel)]="paquete.destinoId">
+              <option value="" disabled>Seleccione un destino</option>
+              <option *ngFor="let d of destinos" [value]="d.id">
+                {{ d.nombre }}
+              </option>
+            </select>
+            <label>Destino</label>
+          </div>
 
-          <input [(ngModel)]="paquete.nombre" placeholder="Nombre" />
+          <div class="input-group">
+            <input type="number" [(ngModel)]="paquete.duracion" placeholder="Duración (días)" />
+            <label>Duración (días)</label>
+          </div>
 
-          <input type="number" [(ngModel)]="paquete.destinoId" placeholder="ID del destino" />
+          <div class="input-group">
+            <input [(ngModel)]="paquete.descripcion" placeholder="Descripción" />
+            <label>Descripción</label>
+          </div>
 
-          <input type="number" [(ngModel)]="paquete.duracion" placeholder="Duración (días)" />
+          <div class="input-group">
+            <input type="number" [(ngModel)]="paquete.precio" placeholder="Precio" />
+            <label>Precio</label>
+          </div>
 
-          <input [(ngModel)]="paquete.descripcion" placeholder="Descripción" />
+          <div class="input-group">
+            <input type="number" [(ngModel)]="paquete.capacidad" placeholder="Capacidad" />
+            <label>Capacidad</label>
+          </div>
 
-          <input type="number" [(ngModel)]="paquete.precio" placeholder="Precio" />
-
-          <input type="number" [(ngModel)]="paquete.capacidad" placeholder="Capacidad" />
-
-          <button class="btn-save" (click)="editarPaquete()">
-            Actualizar
-          </button>
-           <!-- MENSAJE -->
-      <p class="mensaje" *ngIf="mensaje">
-        {{ mensaje }}
-      </p>
+          <button class="btn-save" (click)="editarPaquete()">Actualizar</button>
+          <!-- MENSAJE -->
+          <p class="mensaje" *ngIf="mensaje">
+            {{ mensaje }}
+          </p>
         </div>
 
-        <!-- ===== DESACTIVAR ===== -->
+        <!-- DESACTIVAR -->
         <div *ngSwitchCase="'desactivar'" class="formulario">
           <h2>Desactivar paquete</h2>
 
-          <input type="number" [(ngModel)]="paquete.id" placeholder="ID del paquete" />
+          <div class="input-group">
+            <label class="label-fijo">Seleccionar Paquete</label>
+            <select [(ngModel)]="paquete.id">
+              <option [ngValue]="null" disabled>Seleccione un paquete</option>
+              <option *ngFor="let p of paquetes" [ngValue]="p.id">
+                {{ p.nombre }} - Q{{ p.precio }}
+              </option>
+            </select>
+          </div>
+          <button class="btn-delete" (click)="desactivarPaquete()">Desactivar</button>
 
-          <button class="btn-delete" (click)="desactivarPaquete()">
-            Desactivar
-          </button>
-
-           <!-- MENSAJE -->
+          <!-- MENSAJE -->
           <p class="mensaje" *ngIf="mensaje">
             {{ mensaje }}
           </p>
         </div>
 
-        <!-- ===== ACTIVAR ===== -->
+        <!-- ACTIVAR -->
         <div *ngSwitchCase="'activar'" class="formulario">
           <h2>Activar paquete</h2>
 
-          <input type="number" [(ngModel)]="paquete.id" placeholder="ID del paquete" />
-
-          <button class="btn-save" (click)="activarPaquete()">
-            Activar
-          </button>
+          <div class="input-group">
+            <label class="label-fijo">Seleccionar Paquete</label>
+            <select [(ngModel)]="paquete.id">
+              <option [ngValue]="null" disabled>Seleccione un paquete</option>
+              <option *ngFor="let p of paquetes" [ngValue]="p.id">
+                {{ p.nombre }} - Q{{ p.precio }}
+              </option>
+            </select>
+          </div>
+          <button class="btn-save" (click)="activarPaquete()">Activar</button>
 
           <p class="mensaje" *ngIf="mensaje">
             {{ mensaje }}
           </p>
         </div>
-
       </ng-container>
-
     </div>
 
     <!-- BOTÓN GLOBAL -->
-    <button class="btn-regresar" (click)="regresar()">
-      Regresar
-    </button>
-
+    <button class="btn-regresar" (click)="regresar()">Regresar</button>
   </div>
-
 </div>

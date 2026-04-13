@@ -28,7 +28,6 @@ h2 {
   margin-bottom: 10px;
   max-width: 100%;
 }
-/* ================= HISTORIAL ================= */
 
 /* BUSCADOR */
 .buscador {
@@ -99,9 +98,6 @@ p {
   margin-top: 20px;
   color: #555;
 }
-
-/* ================= FORMULARIO ================= */
-
 .form-container {
   display: flex;
   flex-direction: column;
@@ -195,7 +191,6 @@ input, select {
 .btn-regresar:hover {
   background: #dc2626;
 }
-/* ================= DISPONIBLES ================= */
 
 .disponibles-container {
   display: flex;

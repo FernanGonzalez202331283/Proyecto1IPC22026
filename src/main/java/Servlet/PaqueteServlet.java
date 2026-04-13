@@ -22,7 +22,7 @@ import java.util.List;
  */
 @WebServlet("/PaqueteServlet")
 public class PaqueteServlet extends HttpServlet{
-    // cors
+    //CORS
      private void configurarCORS(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -38,7 +38,7 @@ public class PaqueteServlet extends HttpServlet{
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    // ================= VALIDACIÓN =================
+    // VALIDACION
     private boolean validarAcceso(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
 
@@ -57,7 +57,7 @@ public class PaqueteServlet extends HttpServlet{
         return true;
     }
 
-    // ================= POST (JSON) =================
+    // POST
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -90,7 +90,7 @@ public class PaqueteServlet extends HttpServlet{
             PaqueteDAO dao = new PaqueteDAO();
             String accion = p.getAccion();
 
-            // ================= ACCIONES =================
+            //  ACCIONES 
 
             if ("crear".equals(accion)) {
 
@@ -144,27 +144,47 @@ public class PaqueteServlet extends HttpServlet{
     }
 
     // ================= GET =================
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+   @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
 
-        configurarCORS(response);
+    configurarCORS(response);
+    response.setContentType("application/json");
+    PrintWriter out = response.getWriter();
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+            HttpSession session = request.getSession(false);
 
-        PrintWriter out = response.getWriter();
+         if (session == null || session.getAttribute("rol") == null) {
+             out.print("{\"error\":\"No autorizado\"}");
+             return;
+         }
 
-        try {
-            PaqueteDAO dao = new PaqueteDAO();
-            List<Paquete> lista = dao.listarPaquetes();
+         String rol = (String) session.getAttribute("rol");
 
-            Gson gson = new Gson();
-            out.print(gson.toJson(lista));
+         //PERMITIR ATENCION SOLO PARA CONSULTAR
+         if (!rol.equals("OPERACIONES") && !rol.equals("ADMIN") && !rol.equals("ATENCION")) {
+             out.print("{\"error\":\"Acceso denegado\"}");
+             return;
+         }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            out.print("{\"error\":\"Error al obtener paquetes\"}");
+    try {
+        String accion = request.getParameter("accion");
+
+        PaqueteDAO dao = new PaqueteDAO();
+        Gson gson = new Gson();
+
+        if ("listarInactivos".equals(accion)) {
+
+            out.print(gson.toJson(dao.listarPaquetesPorEstado("inactivo")));
+
+        } else { 
+            // por defecto activos
+            out.print(gson.toJson(dao.listarPaquetesPorEstado("activo")));
         }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        out.print("{\"error\":\"Error al obtener paquetes\"}");
     }
+}
 }

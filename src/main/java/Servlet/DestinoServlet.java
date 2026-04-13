@@ -23,7 +23,7 @@ import java.util.List;
 @WebServlet("/DestinoServlet")
 public class DestinoServlet extends HttpServlet {
 
-    //================= CORS =================
+    //CORS
     private void configurarCORS(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -83,7 +83,7 @@ public class DestinoServlet extends HttpServlet {
         }
     }
 
-    //================= POST =================
+    //POST
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -127,8 +127,9 @@ public class DestinoServlet extends HttpServlet {
                 return;
             }
             
+            int id = Integer.parseInt(idStr.trim());
             Destino d = new Destino();
-            d.setId(Integer.parseInt(request.getParameter("id")));
+            d.setId(id);
             d.setNombre(request.getParameter("nombre"));
             d.setPais(request.getParameter("pais"));
             d.setDescripcion(request.getParameter("descripcion"));
@@ -150,7 +151,7 @@ public class DestinoServlet extends HttpServlet {
                 return;
             }
 
-            int id = Integer.parseInt(request.getParameter("id"));
+            int id = Integer.parseInt(idStr.trim());
 
             if (dao.eliminarDestino(id)) {
                 out.print("{\"status\":\"ok\",\"mensaje\":\"Destino eliminado\"}");
@@ -160,7 +161,7 @@ public class DestinoServlet extends HttpServlet {
         }
     }
 
-    //================= PUT =================
+    //PUT
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -188,7 +189,7 @@ public class DestinoServlet extends HttpServlet {
         }
     }
 
-    //================= DELETE =================
+    //DELETE
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws IOException {

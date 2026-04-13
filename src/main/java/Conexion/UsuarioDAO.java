@@ -15,11 +15,11 @@ import java.util.ArrayList;
  * @author fernan
  */
 public class UsuarioDAO {
+
     public boolean crearUsuario(Usuario u) {
         String sql = "INSERT INTO usuario(username, password, rol, estado) VALUES (?, ?, ?, true)";
 
-        try (Connection con = ConexionBD.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, u.getUsername());
             ps.setString(2, u.getPassword());
@@ -37,9 +37,7 @@ public class UsuarioDAO {
         ArrayList<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM usuario";
 
-        try (Connection con = ConexionBD.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 Usuario u = new Usuario();
@@ -53,5 +51,38 @@ public class UsuarioDAO {
             e.printStackTrace();
         }
         return lista;
+    }
+
+    public boolean existeUsuario(String username) {
+        String sql = "SELECT 1 FROM usuario WHERE username = ?";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int obtenerIdPorUsername(String username) {
+        String sql = "SELECT id FROM usuario WHERE username=?";
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 }

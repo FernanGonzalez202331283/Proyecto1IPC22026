@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 @WebServlet("/PagosPorReservacion")
 public class PagosReservacionServlet extends HttpServlet {
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -31,14 +31,14 @@ public class PagosReservacionServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        /*
+
         HttpSession session = request.getSession(false);
 
         if (session == null) {
             out.print("{\"error\":\"No autorizado\"}");
             return;
         }
-        */
+
         try {
             int id = Integer.parseInt(request.getParameter("id"));
 

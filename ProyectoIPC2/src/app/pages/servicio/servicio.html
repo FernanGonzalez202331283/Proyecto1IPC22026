@@ -1,21 +1,60 @@
 <div class="background">
-    <div class="container">
+  <div class="container">
 
-    <h1>Gestión de Servicios</h1>
+    <h1>Crear Servicio</h1>
 
     <div class="formulario">
 
-        <input [(ngModel)]="servicio.paqueteId" placeholder="ID Paquete">
+      <!-- PAQUETE -->
+      <div class="input-group">
+        <label>Paquete</label>
+        <select [(ngModel)]="servicio.paqueteId" name="paquete">
+          <option [ngValue]="null" disabled selected>Seleccione paquete</option>
+          <option *ngFor="let p of paquetes" [ngValue]="p.id">
+            {{ p.nombre }}
+          </option>
+        </select>
+      </div>
 
-        <input [(ngModel)]="servicio.proveedorId" placeholder="ID Proveedor">
+      <!-- PROVEEDOR -->
+      <div class="input-group">
+        <label>Proveedor</label>
+        <select [(ngModel)]="servicio.proveedorId" name="proveedor">
+          <option [ngValue]="null" disabled selected>Seleccione proveedor</option>
+          <option *ngFor="let pr of proveedores" [ngValue]="pr.id">
+            {{ pr.nombre }}
+          </option>
+        </select>
+      </div>
 
-        <input [(ngModel)]="servicio.nombre" placeholder="Nombre del servicio">
+      <!-- NOMBRE -->
+      <div class="input-group">
+        <label>Nombre</label>
+        <input 
+          type="text"
+          [(ngModel)]="servicio.nombre"
+          name="nombre"
+          placeholder="Ej: Hotel, Transporte, Tour">
+      </div>
 
-        <input [(ngModel)]="servicio.costo" placeholder="Costo">
+      <!-- COSTO -->
+      <div class="input-group">
+        <label>Costo</label>
+        <input 
+          type="number"
+          [(ngModel)]="servicio.costo"
+          name="costo"
+          placeholder="Ej: 1500">
+      </div>
 
-        <button (click)="crearServicio()">Guardar Servicio</button>
+      <button (click)="crearServicio()">
+        Guardar Servicio
+      </button>
+
+      <button class="btn-regresar" (click)="regresar()">
+        Regresar
+      </button>
 
     </div>
-    <button class="btn-regresar" (click)="regresar()">Regresar</button>
-    </div>
+  </div>
 </div>

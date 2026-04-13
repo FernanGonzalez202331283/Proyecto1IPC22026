@@ -26,8 +26,15 @@ export class Atencion {
   irReembolsos() {
     this.router.navigate(['/reembolsos']);
   }
-  regresar(){
+ regresar(){
+  const rol = localStorage.getItem('rol');
+
+  if (rol === 'ADMIN') {
+    this.router.navigate(['/admin']);
+  } else {
+    // otros roles regresan al login
     localStorage.clear();
     this.router.navigate(['']);
   }
+}
 }

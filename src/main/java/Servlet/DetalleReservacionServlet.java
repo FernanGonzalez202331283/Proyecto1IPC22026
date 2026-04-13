@@ -46,7 +46,7 @@ public class DetalleReservacionServlet  extends HttpServlet{
             return;
         }
 
-        // Devolvemos JSON con la info
+        //DEVOLVEMOS JSON CON INFORMACION 
         out.print("{"
             + "\"id\":" + r.getId() + ","
             + "\"paquete\":\"" + r.getPaquete() + "\","

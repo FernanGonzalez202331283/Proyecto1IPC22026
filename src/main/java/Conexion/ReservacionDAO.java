@@ -57,73 +57,69 @@ public class ReservacionDAO {
 
     public Reservacion obtenerPorId(int id) {
 
-       String sql = "SELECT r.*, " +
-            "p.nombre AS paquete_nombre, " +
-            "d.nombre AS destino_nombre, " +
-            "d.imagen_url, " +
-            "u.username AS agente " +
-            "FROM reservacion r " +
-            "JOIN paquete p ON r.paquete_id = p.id " +
-            "JOIN destino d ON p.destino_id = d.id " +
-            "JOIN usuario u ON r.usuario_id = u.id " +
-            "WHERE r.id=?";
+        String sql = "SELECT r.*, "
+                + "p.nombre AS paquete_nombre, "
+                + "d.nombre AS destino_nombre, "
+                + "d.imagen_url, "
+                + "u.username AS agente "
+                + "FROM reservacion r "
+                + "JOIN paquete p ON r.paquete_id = p.id "
+                + "JOIN destino d ON p.destino_id = d.id "
+                + "JOIN usuario u ON r.usuario_id = u.id "
+                + "WHERE r.id=?";
 
-    try (Connection con = ConexionBD.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
+            if (rs.next()) {
 
-            Reservacion r = new Reservacion();
+                Reservacion r = new Reservacion();
 
-            // DATOS PRINCIPALES
-            r.setId(rs.getInt("id"));
-            r.setFechaViaje(rs.getString("fecha_viaje"));
-            r.setFechaCreacion(rs.getString("fecha_creacion")); // NUEVO
-            r.setCandidadPersonas(rs.getInt("cantidad_personas"));
-            r.setCosotTotal(rs.getDouble("costo_total"));
-            r.setEstado(rs.getString("estado"));
-            r.setPaqueteId(rs.getInt("paquete_id"));
+                // DATOS PRINCIPALES
+                r.setId(rs.getInt("id"));
+                r.setFechaViaje(rs.getString("fecha_viaje"));
+                r.setFechaCreacion(rs.getString("fecha_creacion")); // NUEVO
+                r.setCandidadPersonas(rs.getInt("cantidad_personas"));
+                r.setCosotTotal(rs.getDouble("costo_total"));
+                r.setEstado(rs.getString("estado"));
+                r.setPaqueteId(rs.getInt("paquete_id"));
 
-            // INFO EXTRA
-            r.setPaquete(rs.getString("paquete_nombre"));
-            r.setDestino(rs.getString("destino_nombre"));
-            r.setImagen(rs.getString("imagen_url"));
-            r.setAgente(rs.getString("agente"));
+                // INFO 
+                r.setPaquete(rs.getString("paquete_nombre"));
+                r.setDestino(rs.getString("destino_nombre"));
+                r.setImagen(rs.getString("imagen_url"));
+                r.setAgente(rs.getString("agente"));
 
-            // =========================
-            // AQUÍ AGREGAS PASAJEROS
-            // =========================
-            String sqlClientes = "SELECT c.nombre, c.dpi " +
-                                 "FROM reservacion_cliente rc " +
-                                 "JOIN cliente c ON rc.cliente_dpi = c.dpi " +
-                                 "WHERE rc.reservacion_id = ?";
+                String sqlClientes = "SELECT c.nombre, c.dpi "
+                        + "FROM reservacion_cliente rc "
+                        + "JOIN cliente c ON rc.cliente_dpi = c.dpi "
+                        + "WHERE rc.reservacion_id = ?";
 
-            PreparedStatement psClientes = con.prepareStatement(sqlClientes);
-            psClientes.setInt(1, id);
+                PreparedStatement psClientes = con.prepareStatement(sqlClientes);
+                psClientes.setInt(1, id);
 
-            ResultSet rsClientes = psClientes.executeQuery();
+                ResultSet rsClientes = psClientes.executeQuery();
 
-            List<String> pasajeros = new ArrayList<>();
+                List<String> pasajeros = new ArrayList<>();
 
-            while (rsClientes.next()) {
-                String nombre = rsClientes.getString("nombre");
-                String dpi = rsClientes.getString("dpi");
-                pasajeros.add(nombre + " - " + dpi);
+                while (rsClientes.next()) {
+                    String nombre = rsClientes.getString("nombre");
+                    String dpi = rsClientes.getString("dpi");
+                    pasajeros.add(nombre + " - " + dpi);
+                }
+
+                r.setPasajeros(pasajeros);
+
+                return r;
             }
 
-            r.setPasajeros(pasajeros);
-
-            return r;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-
-    return null;
+        return null;
     }
 
     public List<Reservacion> obtenerPorCliente(String dpi) {
@@ -167,135 +163,195 @@ public class ReservacionDAO {
         return lista;
     }
 
-   public List<Reservacion> obtenerDisponibles(String fecha, int destinoId) {
+    public List<Reservacion> obtenerDisponibles(String fecha, int destinoId) {
 
-    List<Reservacion> lista = new ArrayList<>();
+        List<Reservacion> lista = new ArrayList<>();
 
-    String sql = "SELECT r.*, p.nombre AS paquete_nombre, d.nombre AS destino_nombre "
-            + "FROM reservacion r "
-            + "JOIN paquete p ON r.paquete_id = p.id "
-            + "JOIN destino d ON p.destino_id = d.id "
-            + "WHERE r.fecha_viaje = ? AND d.id = ?";
+        String sql = "SELECT r.*, p.nombre AS paquete_nombre, d.nombre AS destino_nombre "
+                + "FROM reservacion r "
+                + "JOIN paquete p ON r.paquete_id = p.id "
+                + "JOIN destino d ON p.destino_id = d.id "
+                + "WHERE r.fecha_viaje = ? AND d.id = ?";
 
-    try (Connection con = ConexionBD.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setString(1, fecha);
-        ps.setInt(2, destinoId);
+            ps.setString(1, fecha);
+            ps.setInt(2, destinoId);
 
-        ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
+            while (rs.next()) {
 
-            Reservacion r = new Reservacion();
+                Reservacion r = new Reservacion();
 
-            r.setId(rs.getInt("id"));
-            r.setFechaViaje(rs.getString("fecha_viaje"));
-            r.setCandidadPersonas(rs.getInt("cantidad_personas"));
-            r.setCosotTotal(rs.getDouble("costo_total"));
-            r.setEstado(rs.getString("estado"));
+                r.setId(rs.getInt("id"));
+                r.setFechaViaje(rs.getString("fecha_viaje"));
+                r.setCandidadPersonas(rs.getInt("cantidad_personas"));
+                r.setCosotTotal(rs.getDouble("costo_total"));
+                r.setEstado(rs.getString("estado"));
 
-            r.setPaquete(rs.getString("paquete_nombre"));
-            r.setDestino(rs.getString("destino_nombre"));
+                r.setPaquete(rs.getString("paquete_nombre"));
+                r.setDestino(rs.getString("destino_nombre"));
 
-            lista.add(r);
+                lista.add(r);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return lista;
     }
 
-    return lista;
-}
     public List<Reservacion> obtenerPorFecha(String fecha) {
 
-    List<Reservacion> lista = new ArrayList<>();
+        List<Reservacion> lista = new ArrayList<>();
 
-    String sql = "SELECT r.*, " +
-                 "p.nombre AS paquete_nombre, " +
-                 "p.precio, " +
-                 "p.capacidad, " +
-                 "d.nombre AS destino_nombre " +
-                 "FROM reservacion r " +
-                 "JOIN paquete p ON r.paquete_id = p.id " +
-                 "JOIN destino d ON p.destino_id = d.id " +
-                 "WHERE r.fecha_viaje = ? " +
-                 "ORDER BY r.id DESC";
+        String sql = "SELECT r.*, "
+                + "p.nombre AS paquete_nombre, "
+                + "p.precio, "
+                + "p.capacidad, "
+                + "d.nombre AS destino_nombre "
+                + "FROM reservacion r "
+                + "JOIN paquete p ON r.paquete_id = p.id "
+                + "JOIN destino d ON p.destino_id = d.id "
+                + "WHERE r.fecha_viaje = ? "
+                + "ORDER BY r.id DESC";
 
-    try (Connection con = ConexionBD.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setString(1, fecha);
-        ResultSet rs = ps.executeQuery();
+            ps.setString(1, fecha);
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
+            while (rs.next()) {
 
-            Reservacion r = new Reservacion();
+                Reservacion r = new Reservacion();
 
-            int capacidad = rs.getInt("capacidad");
-            int ocupados = rs.getInt("cantidad_personas");
+                int capacidad = rs.getInt("capacidad");
+                int ocupados = rs.getInt("cantidad_personas");
 
-            //CALCULAR CUPOS DISPONIBLES
-            int cupos = capacidad - ocupados;
+                //CALCULAR CUPOS DISPONIBLES
+                int cupos = capacidad - ocupados;
 
-            r.setId(rs.getInt("id"));
-            r.setFechaViaje(rs.getString("fecha_viaje"));
-            r.setCandidadPersonas(ocupados);
-            r.setCosotTotal(rs.getDouble("costo_total"));
-            r.setEstado(rs.getString("estado"));
+                r.setId(rs.getInt("id"));
+                r.setFechaViaje(rs.getString("fecha_viaje"));
+                r.setCandidadPersonas(ocupados);
+                r.setCosotTotal(rs.getDouble("costo_total"));
+                r.setEstado(rs.getString("estado"));
 
-            r.setPaquete(rs.getString("paquete_nombre"));
-            r.setDestino(rs.getString("destino_nombre"));
+                r.setPaquete(rs.getString("paquete_nombre"));
+                r.setDestino(rs.getString("destino_nombre"));
 
-            //NUEVOS CAMPOS
-            r.setPrecio(rs.getDouble("precio"));
-            r.setCupos(cupos);
+                //NUEVOS CAMPOS
+                r.setPrecio(rs.getDouble("precio"));
+                r.setCupos(cupos);
 
-            lista.add(r);
+                lista.add(r);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return lista;
     }
 
-    return lista;
-}
     public List<Reservacion> obtenerReservacionesHoy() {
 
-    List<Reservacion> lista = new ArrayList<>();
+        List<Reservacion> lista = new ArrayList<>();
 
-    String sql = "SELECT r.*, p.nombre AS paquete_nombre, d.nombre AS destino_nombre " +
-            "FROM reservacion r " +
-            "JOIN paquete p ON r.paquete_id = p.id " +
-            "JOIN destino d ON p.destino_id = d.id " +
-            "WHERE DATE(r.fecha_creacion) = CURDATE() " +
-            "ORDER BY r.id DESC";
+        String sql = "SELECT r.*, p.nombre AS paquete_nombre, d.nombre AS destino_nombre "
+                + "FROM reservacion r "
+                + "JOIN paquete p ON r.paquete_id = p.id "
+                + "JOIN destino d ON p.destino_id = d.id "
+                + "WHERE DATE(r.fecha_creacion) = CURDATE() "
+                + "ORDER BY r.id DESC";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Reservacion r = new Reservacion();
+
+                r.setId(rs.getInt("id"));
+                r.setFechaViaje(rs.getString("fecha_viaje"));
+                r.setCandidadPersonas(rs.getInt("cantidad_personas"));
+                r.setCosotTotal(rs.getDouble("costo_total"));
+                r.setEstado(rs.getString("estado"));
+
+                r.setPaquete(rs.getString("paquete_nombre"));
+                r.setDestino(rs.getString("destino_nombre"));
+
+                lista.add(r);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+
+    public boolean existeReservacion(int paqueteId, String fecha, int usuarioId) {
+
+        String sql = "SELECT COUNT(*) FROM reservacion WHERE paquete_id=? AND fecha_viaje=? AND usuario_id=?";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, paqueteId);
+            ps.setString(2, fecha);
+            ps.setInt(3, usuarioId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean existeReservacionPorId(int id) {
+
+        String sql = "SELECT COUNT(*) FROM reservacion WHERE id=?";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    
+    public void actualizarReservacionesCompletadas() {
+
+    String sql = "UPDATE reservacion "
+               + "SET estado = 'COMPLETADA' "
+               + "WHERE estado = 'CONFIRMADA' "
+               + "AND fecha_viaje < CURDATE()";
 
     try (Connection con = ConexionBD.getConnection();
          PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-
-            Reservacion r = new Reservacion();
-
-            r.setId(rs.getInt("id"));
-            r.setFechaViaje(rs.getString("fecha_viaje"));
-            r.setCandidadPersonas(rs.getInt("cantidad_personas"));
-            r.setCosotTotal(rs.getDouble("costo_total"));
-            r.setEstado(rs.getString("estado"));
-
-            r.setPaquete(rs.getString("paquete_nombre"));
-            r.setDestino(rs.getString("destino_nombre"));
-
-            lista.add(r);
-        }
+        int filas = ps.executeUpdate();
+        System.out.println("Reservaciones actualizadas a COMPLETADA: " + filas);
 
     } catch (Exception e) {
         e.printStackTrace();
     }
-
-    return lista;
 }
 }

@@ -6,7 +6,9 @@ Logica/Cliente.class
 Logica/Proveedor.class
 Logica/Destino.class
 Conexion/ClienteDAO.class
+CargaDeDatos/CargaDatos.class
 com/mycompany/proyecto1ipc2/resources/JakartaEE11Resource.class
+Servlet/CargaDeDatosServlet.class
 Logica/Paquete.class
 Conexion/ProveedorDAO.class
 Servlet/ReservacionesDiaServlet.class

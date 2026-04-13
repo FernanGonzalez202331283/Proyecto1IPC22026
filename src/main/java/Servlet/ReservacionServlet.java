@@ -4,6 +4,7 @@
  */
 package Servlet;
 
+import Conexion.PagoDAO;
 import Conexion.PaqueteDAO;
 import Conexion.ReservacionDAO;
 import Logica.Reservacion;
@@ -29,7 +30,6 @@ import com.google.gson.JsonArray;
 @WebServlet("/ReservacionServlet")
 public class ReservacionServlet extends HttpServlet {
 
-    
     private void configurarCORS(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -65,7 +65,7 @@ public class ReservacionServlet extends HttpServlet {
 
         String rol = (String) session.getAttribute("rol");
 
-       if (!rol.equals("ATENCION") && !rol.equals("ADMIN")) {
+        if (!rol.equals("ATENCION") && !rol.equals("ADMIN")) {
             out.print("{\"error\":\"Acceso denegado\"}");
             return;
         }
@@ -102,7 +102,7 @@ public class ReservacionServlet extends HttpServlet {
             String[] dpis = new String[dpisJson.size()];
 
             for (int i = 0; i < dpisJson.size(); i++) {
-                dpis[i] = dpisJson.get(i).getAsString();
+                dpis[i] = dpisJson.get(i).getAsString().trim();
             }
 
             //VALIDACIONES
@@ -160,113 +160,123 @@ public class ReservacionServlet extends HttpServlet {
             out.print("{\"error\":\"Error interno\"}");
         }
     }
-    
-   @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {
 
-    configurarCORS(response);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
+        configurarCORS(response);
 
-    PrintWriter out = response.getWriter();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-    try {
+        PrintWriter out = response.getWriter();
 
-        String accion = request.getParameter("accion");
+        try {
 
-        ReservacionDAO dao = new ReservacionDAO();
-        Gson gson = new Gson();
+            String accion = request.getParameter("accion");
 
-        // ================= HISTORIAL POR CLIENTE (SIN SESIÓN) =================
-        if ("historialCliente".equals(accion)) {
+            ReservacionDAO dao = new ReservacionDAO();
+            dao.actualizarReservacionesCompletadas();
+            Gson gson = new Gson();
 
-            String dpi = request.getParameter("dpi");
+            // historial de cliente
+            if ("historialCliente".equals(accion)) {
 
-            if (dpi == null || dpi.isEmpty()) {
-                out.print("{\"error\":\"DPI requerido\"}");
+                String dpi = request.getParameter("dpi");
+
+                if (dpi == null || dpi.isEmpty()) {
+                    out.print("{\"error\":\"DPI requerido\"}");
+                    return;
+                }
+
+                var lista = dao.obtenerPorCliente(dpi);
+                out.print(gson.toJson(lista));
+                return;
+            }
+            //DETALLE DEL PAQUETE
+            if ("detallePaquete".equals(accion)) {
+
+                String paqueteIdStr = request.getParameter("paqueteId");
+
+                if (paqueteIdStr == null) {
+                    out.print("{\"error\":\"paqueteId requerido\"}");
+                    return;
+                }
+
+                int paqueteId = Integer.parseInt(paqueteIdStr);
+
+                PaqueteDAO daoP = new PaqueteDAO();
+                var detalle = daoP.obtenerDetallePaquete(paqueteId);
+                out.print(gson.toJson(detalle));
+                return;
+            }
+            if ("disponibles".equals(accion)) {
+
+                String fecha = request.getParameter("fecha");
+                String destino = request.getParameter("destino");
+
+                if (fecha == null || fecha.isEmpty()) {
+                    out.print("{\"error\":\"Fecha requerida\"}");
+                    return;
+                }
+
+                var lista = dao.obtenerPorFecha(fecha);
+
+                out.print(gson.toJson(lista));
+                return;
+            }
+            if ("hoy".equals(accion)) {
+
+                var lista = dao.obtenerReservacionesHoy();
+                out.print(gson.toJson(lista));
                 return;
             }
 
-            var lista = dao.obtenerPorCliente(dpi);
-            out.print(gson.toJson(lista));
-            return;
-        }
-        // DETALLE DEL PAQUETE
-        if ("detallePaquete".equals(accion)) {
+            // verificar la sesion
+            HttpSession session = request.getSession(false);
 
-            String paqueteIdStr = request.getParameter("paqueteId");
-
-            if (paqueteIdStr == null) {
-                out.print("{\"error\":\"paqueteId requerido\"}");
+            if (session == null || session.getAttribute("usuario_id") == null) {
+                out.print("{\"error\":\"No autorizado\"}");
                 return;
             }
 
-            int paqueteId = Integer.parseInt(paqueteIdStr);
+            // consultar por id
+            String idStr = request.getParameter("id");
 
-            PaqueteDAO daoP = new PaqueteDAO();
-            var detalle = daoP.obtenerDetallePaquete(paqueteId);
-            out.print(gson.toJson(detalle));
-            return;
+            if (idStr == null) {
+                out.print("{\"error\":\"ID requerido\"}");
+                return;
+            }
+
+            int id = Integer.parseInt(idStr);
+
+            Reservacion r = dao.obtenerPorId(id);
+
+            if (r == null) {
+                out.print("{\"error\":\"No encontrada\"}");
+                return;
+            }
+
+            //CONVERTIR RESERVACION A JSON
+            JsonObject resp = gson.toJsonTree(r).getAsJsonObject();
+
+            PagoDAO pagoDAO = new PagoDAO();
+            var pagos = pagoDAO.pagosPorReservacion(id);
+
+            double totalPagado = 0;
+            for (var p : pagos) {
+                totalPagado += p.get("monto").getAsDouble();
+            }
+
+            resp.addProperty("totalPagado", totalPagado);
+            resp.add("pagos", gson.toJsonTree(pagos));
+
+            out.print(resp.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.print("{\"error\":\"Error interno\"}");
         }
-
-        // ================= DISPONIBLES (SIN SESIÓN) =================
-        if ("disponibles".equals(accion)) {
-
-        String fecha = request.getParameter("fecha");
-        String destino = request.getParameter("destino");
-
-        if (fecha == null || fecha.isEmpty()) {
-            out.print("{\"error\":\"Fecha requerida\"}");
-            return;
-        }
-
-        var lista = dao.obtenerPorFecha(fecha);
-
-        // si quieres con destino:
-        // dao.obtenerPorFechaDestino(fecha, Integer.parseInt(destino));
-
-        out.print(gson.toJson(lista));
-        return;
     }
-        if ("hoy".equals(accion)) {
-
-            var lista = dao.obtenerReservacionesHoy();
-            out.print(gson.toJson(lista));
-            return;
-        }
-
-        // ================= A PARTIR DE AQUÍ REQUIERE SESIÓN =================
-        HttpSession session = request.getSession(false);
-
-        if (session == null || session.getAttribute("usuario_id") == null) {
-            out.print("{\"error\":\"No autorizado\"}");
-            return;
-        }
-        
-        // ================= CONSULTAR POR ID =================
-        String idStr = request.getParameter("id");
-
-        if (idStr == null) {
-            out.print("{\"error\":\"ID requerido\"}");
-            return;
-        }
-
-        int id = Integer.parseInt(idStr);
-
-        Reservacion r = dao.obtenerPorId(id);
-
-        if (r == null) {
-            out.print("{\"error\":\"No encontrada\"}");
-            return;
-        }
-
-        out.print(gson.toJson(r));
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        out.print("{\"error\":\"Error interno\"}");
-    }
-}
 }

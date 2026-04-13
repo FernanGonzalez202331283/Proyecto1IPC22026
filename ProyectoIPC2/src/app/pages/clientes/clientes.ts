@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
   styleUrl: './clientes.css',
 })
 export class Clientes {
-
   accion: string = '';
   mostrarBotonRegresar: boolean = false;
 
@@ -22,21 +21,21 @@ export class Clientes {
     fecha: '',
     telefono: '',
     correo: '',
-    nacionalidad: ''
+    nacionalidad: '',
   };
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
-  this.route.queryParams.subscribe(params => {
-    this.accion = params['accion'];
-    console.log("ACCION:", this.accion);
-  });
-}
+    this.route.queryParams.subscribe((params) => {
+      this.accion = params['accion'];
+      console.log('ACCION:', this.accion);
+    });
+  }
 
   guardarCliente() {
     const url = 'http://localhost:8080/Proyecto1IPC2/ClienteServlet';
@@ -49,71 +48,75 @@ export class Clientes {
       .set('correo', this.cliente.correo)
       .set('nacionalidad', this.cliente.nacionalidad);
 
-    this.http.post(url, body.toString(), {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      withCredentials: true
-    }).subscribe({
-      next: (res: any) => {
-        console.log('Respuesta backend:', res);
+    this.http
+      .post(url, body.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        withCredentials: true,
+      })
+      .subscribe({
+        next: (res: any) => {
+          console.log('Respuesta backend:', res);
 
-        if (res.status === 'ok') {
-          alert(res.mensaje || 'Cliente creado');
+          if (res.status === 'ok') {
+            alert(res.mensaje || 'Cliente creado');
 
-          this.cliente = {
-            dpi: '',
-            nombre: '',
-            fecha: '',
-            telefono: '',
-            correo: '',
-            nacionalidad: ''
-          };
+            this.cliente = {
+              dpi: '',
+              nombre: '',
+              fecha: '',
+              telefono: '',
+              correo: '',
+              nacionalidad: '',
+            };
 
-          this.mostrarBotonRegresar = true;
-        } else {
-          alert(res.error || res.mensaje || 'No se pudo guardar');
-        }
-      },
-      error: (err) => {
-        console.error('Error al guardar cliente:', err);
-        alert('Error al guardar');
-      }
-    });
+            this.mostrarBotonRegresar = true;
+          } else {
+            alert(res.error || res.mensaje || 'No se pudo guardar');
+          }
+        },
+        error: (err) => {
+          console.error('Error al guardar cliente:', err);
+          alert('Error al guardar');
+        },
+      });
   }
-    actualizarCliente() {
-  const url = 'http://localhost:8080/Proyecto1IPC2/ClienteServlet';
+  actualizarCliente() {
+    const url = 'http://localhost:8080/Proyecto1IPC2/ClienteServlet';
 
-  const body = new HttpParams()
-    .set('accion', 'actualizar')
-    .set('dpi', this.cliente.dpi)
-    .set('nombre', this.cliente.nombre)
-    .set('fecha', this.cliente.fecha)
-    .set('telefono', this.cliente.telefono)
-    .set('correo', this.cliente.correo)
-    .set('nacionalidad', this.cliente.nacionalidad);
+    const body = new HttpParams()
+      .set('accion', 'actualizar')
+      .set('dpi', this.cliente.dpi)
+      .set('nombre', this.cliente.nombre)
+      .set('fecha', this.cliente.fecha)
+      .set('telefono', this.cliente.telefono)
+      .set('correo', this.cliente.correo)
+      .set('nacionalidad', this.cliente.nacionalidad);
 
-  this.http.post(url, body.toString(), {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    withCredentials: true
-  }).subscribe({
-    next: (res: any) => {
-      if (res.status === 'ok') {
-        alert(res.mensaje || 'Cliente actualizado');
-        this.limpiarCampos();
-        this.mostrarBotonRegresar = true;
-      } else {
-        alert(res.error || res.mensaje || 'No se pudo actualizar');
-      }
-    },
-    error: (err) => {
-      console.error(err);
-      alert('Error al actualizar cliente');
-    }
-  });
-}
+    this.http
+      .post(url, body.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        withCredentials: true,
+      })
+      .subscribe({
+        next: (res: any) => {
+          if (res.status === 'ok') {
+            alert(res.mensaje || 'Cliente actualizado');
+            this.limpiarCampos();
+            this.mostrarBotonRegresar = true;
+          } else {
+            alert(res.error || res.mensaje || 'No se pudo actualizar');
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Error al actualizar cliente');
+        },
+      });
+  }
 
   limpiarCampos() {
     this.cliente = {
@@ -122,36 +125,35 @@ export class Clientes {
       fecha: '',
       telefono: '',
       correo: '',
-      nacionalidad: ''
+      nacionalidad: '',
     };
-}
-buscarCliente() {
-  const url = 'http://localhost:8080/Proyecto1IPC2/ClienteServlet';
-  const params = new HttpParams().set('dpi', this.cliente.dpi);
+  }
+  buscarCliente() {
+    const url = 'http://localhost:8080/Proyecto1IPC2/ClienteServlet';
+    const params = new HttpParams().set('dpi', this.cliente.dpi);
 
-  this.http.get(url, { params, withCredentials: true }).subscribe({
-    next: (res: any) => {
-      console.log('Respuesta búsqueda:', res);
+    this.http.get(url, { params, withCredentials: true }).subscribe({
+      next: (res: any) => {
+        console.log('Respuesta búsqueda:', res);
 
-      if (res.dpi) {
-        this.cliente.dpi = res.dpi;
-        this.cliente.nombre = res.nombre;
-        this.cliente.fecha = res.fecha;
-        this.cliente.telefono = res.telefono;
-        this.cliente.correo = res.correo;
-        this.cliente.nacionalidad = res.nacionalidad;
-      } else {
-        alert(res.mensaje || 'Cliente no encontrado');
-      }
-    },
-    error: (err) => {
-      console.error('Error al buscar cliente:', err);
-      alert('Error al buscar cliente');
-    }
-  });
-}
+        if (res.dpi) {
+          this.cliente.dpi = res.dpi;
+          this.cliente.nombre = res.nombre;
+          this.cliente.fecha = res.fecha;
+          this.cliente.telefono = res.telefono;
+          this.cliente.correo = res.correo;
+          this.cliente.nacionalidad = res.nacionalidad;
+        } else {
+          alert(res.mensaje || 'Cliente no encontrado');
+        }
+      },
+      error: (err) => {
+        console.error('Error al buscar cliente:', err);
+        alert('Error al buscar cliente');
+      },
+    });
+  }
   regresar() {
     this.router.navigate(['/atencion']);
   }
-  
 }

@@ -28,7 +28,14 @@ export class Operaciones {
   }
 
   regresar(){
+  const rol = localStorage.getItem('rol');
+
+  if (rol === 'ADMIN') {
+    this.router.navigate(['/admin']);
+  } else {
+    // otros roles regresan al login
     localStorage.clear();
     this.router.navigate(['']);
   }
+}
 }

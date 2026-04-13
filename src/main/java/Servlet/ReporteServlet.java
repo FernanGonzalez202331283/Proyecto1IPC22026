@@ -46,15 +46,52 @@ protected void doOptions(HttpServletRequest request, HttpServletResponse respons
         try {
 
             if ("ventas".equals(tipo)) {
-
+                response.setContentType("application/json");
                 List<Map<String, Object>> lista = dao.reporteVentas(inicio, fin);
                 response.getWriter().write(gson.toJson(lista));
             }else if ("cancelaciones".equals(tipo)) {
-
+                response.setContentType("application/json");
                 List<Map<String, Object>> lista = dao.reporteCancelaciones(inicio, fin);
                 response.getWriter().write(gson.toJson(lista));
-            }else{
-                response.getWriter().write("[]");
+            }else if ("ganancias".equals(tipo)) {
+                response.setContentType("application/json");
+                Map<String, Object> datos = dao.reporteGanancias(inicio, fin);
+                response.setContentType("application/json");
+                response.getWriter().write(new Gson().toJson(datos));
+            }else if ("mejor-agente".equalsIgnoreCase(tipo)
+                    || "topAgenteVentas".equalsIgnoreCase(tipo)
+                    || "mejorAgente".equalsIgnoreCase(tipo)) {
+
+                Map<String, Object> datos = dao.reporteMejorAgente(inicio, fin);
+
+                response.setContentType("application/json");
+                response.getWriter().write(gson.toJson(datos));
+            }else if ("topAgenteGanancias".equalsIgnoreCase(tipo)) {
+                Map<String, Object> datos = dao.topAgenteGanancias(inicio, fin);
+
+                response.setContentType("application/json");
+                response.getWriter().write(gson.toJson(datos));
+            }else if ("paquete-top".equalsIgnoreCase(tipo) || "paqueteMas".equalsIgnoreCase(tipo)) {
+                Map<String, Object> datos = dao.reportePaqueteMasVendido(inicio, fin);
+
+                response.setContentType("application/json");
+                response.getWriter().write(gson.toJson(datos));
+            }
+            else if ("paqueteMin".equalsIgnoreCase(tipo) || "paqueteMenos".equalsIgnoreCase(tipo)) {
+                Map<String, Object> datos = dao.reportePaqueteMenosVendido(inicio, fin);
+                System.out.println("DEBUG: Entró al reporte de menos vendido correctamente");
+                response.setContentType("application/json");
+                response.getWriter().write(gson.toJson(datos));
+            }
+            else if (tipo != null && (tipo.equalsIgnoreCase("ocupacion-destino") || tipo.toLowerCase().contains("ocupacion"))) {
+                List<Map<String, Object>> resultado = dao.reporteOcupacionDestinos(inicio, fin);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(new Gson().toJson(resultado));
+            }
+            else{
+                System.out.println("ADVERTENCIA: No se reconoció el tipo [" + tipo + "]");
+                response.getWriter().write("{}");
             }
         } catch (Exception e) {
             e.printStackTrace();

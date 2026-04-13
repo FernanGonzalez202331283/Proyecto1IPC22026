@@ -1,1 +1,13 @@
-<p>carga-datos works!</p>
+<div class="background">
+  <div class="container">
+    <h2>Carga Masiva de Datos</h2>
+
+    <input type="file" (change)="seleccionarArchivo($event)" />
+
+    <button (click)="subirArchivo()">Subir Archivo</button>
+
+    <button class="btn-back" (click)="regresar()">Regresar</button>
+
+    <p *ngIf="mensaje">{{ mensaje }}</p>
+  </div>
+</div>

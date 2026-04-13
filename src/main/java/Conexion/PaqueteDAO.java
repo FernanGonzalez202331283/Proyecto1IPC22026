@@ -85,9 +85,11 @@ public class PaqueteDAO {
                 Paquete p = new Paquete();
                 p.setId(rs.getInt("id"));
                 p.setNombre(rs.getString("nombre"));
+                p.setDestinoId(rs.getInt("destino_id"));   
+                p.setDuracion(rs.getInt("duracion"));      
+                p.setDescripcion(rs.getString("descripcion"));
                 p.setPrecio(rs.getDouble("precio"));
                 p.setCapacidad(rs.getInt("capacidad"));
-               
 
                 lista.add(p);
             }
@@ -98,6 +100,38 @@ public class PaqueteDAO {
 
         return lista;
     }
+    public List<Paquete> listarPaquetesPorEstado(String estado) {
+
+    List<Paquete> lista = new ArrayList<>();
+
+    String sql = "SELECT * FROM paquete WHERE estado=?";
+
+    try (Connection con = ConexionBD.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, estado);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            Paquete p = new Paquete();
+            p.setId(rs.getInt("id"));
+            p.setNombre(rs.getString("nombre"));
+            p.setDestinoId(rs.getInt("destino_id"));
+            p.setDuracion(rs.getInt("duracion"));
+            p.setDescripcion(rs.getString("descripcion"));
+            p.setPrecio(rs.getDouble("precio"));
+            p.setCapacidad(rs.getInt("capacidad"));
+
+            lista.add(p);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return lista;
+}
 
     public boolean actualizarPaquete(Paquete p) {
 
@@ -122,14 +156,13 @@ public class PaqueteDAO {
         return false;
     }
 
-   public boolean cambiarEstadoPaquete(int id, String estado) {
+    public boolean cambiarEstadoPaquete(int id, String estado) {
 
-    String sql = "UPDATE paquete SET estado=? WHERE id=?";
+        String sql = "UPDATE paquete SET estado=? WHERE id=?";
 
-        try (Connection con = ConexionBD.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, estado); // 'activo' o 'inactivo'
+            ps.setString(1, estado);
             ps.setInt(2, id);
 
             return ps.executeUpdate() > 0;
@@ -140,45 +173,101 @@ public class PaqueteDAO {
 
         return false;
     }
-   
-   public List<JsonObject> obtenerDetallePaquete(int paqueteId) {
 
-    List<JsonObject> lista = new ArrayList<>();
+    public List<JsonObject> obtenerDetallePaquete(int paqueteId) {
 
-    String sql = "SELECT p.nombre AS paquete, p.precio, p.duracion, " +
-            
-                 "d.nombre AS destino, d.imagen_url, s.nombre AS servicio, s.costo, pr.nombre AS proveedor " +
-                 "FROM paquete p " +
-                 "JOIN destino d ON p.destino_id = d.id " +
-                 "LEFT JOIN servicio s ON p.id = s.paquete_id " +
-                 "LEFT JOIN proveedor pr ON s.proveedor_id = pr.id " +
-                 "WHERE p.id = ?";
+        List<JsonObject> lista = new ArrayList<>();
 
-    try (Connection con = ConexionBD.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        String sql = "SELECT p.nombre AS paquete, p.precio, p.duracion, "
+                + "d.nombre AS destino, d.imagen_url, s.nombre AS servicio, s.costo, pr.nombre AS proveedor "
+                + "FROM paquete p "
+                + "JOIN destino d ON p.destino_id = d.id "
+                + "LEFT JOIN servicio s ON p.id = s.paquete_id "
+                + "LEFT JOIN proveedor pr ON s.proveedor_id = pr.id "
+                + "WHERE p.id = ?";
 
-        ps.setInt(1, paqueteId);
-        ResultSet rs = ps.executeQuery();
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-        while (rs.next()) {
-            JsonObject obj = new JsonObject();
+            ps.setInt(1, paqueteId);
+            ResultSet rs = ps.executeQuery();
 
-            obj.addProperty("paquete", rs.getString("paquete"));
-            obj.addProperty("precio", rs.getDouble("precio"));
-            obj.addProperty("duracion", rs.getInt("duracion"));
-            obj.addProperty("destino", rs.getString("destino"));
-            obj.addProperty("imagen", rs.getString("imagen_url"));
-            obj.addProperty("servicio", rs.getString("servicio"));
-            obj.addProperty("costo", rs.getDouble("costo"));
-            obj.addProperty("proveedor", rs.getString("proveedor"));
+            while (rs.next()) {
+                JsonObject obj = new JsonObject();
 
-            lista.add(obj);
+                obj.addProperty("paquete", rs.getString("paquete"));
+                obj.addProperty("precio", rs.getDouble("precio"));
+                obj.addProperty("duracion", rs.getInt("duracion"));
+                obj.addProperty("destino", rs.getString("destino"));
+                obj.addProperty("imagen", rs.getString("imagen_url"));
+                obj.addProperty("servicio", rs.getString("servicio"));
+                obj.addProperty("costo", rs.getDouble("costo"));
+                obj.addProperty("proveedor", rs.getString("proveedor"));
+
+                lista.add(obj);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return lista;
     }
 
-    return lista;
-}
+    public boolean existePaquete(String nombre) {
+
+        String sql = "SELECT id FROM paquete WHERE nombre = ?";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public int obtenerIdPorNombre(String nombre) {
+        String sql = "SELECT id FROM paquete WHERE nombre = ? AND estado='activo'";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    public double obtenerPrecio(int id) {
+
+        String sql = "SELECT precio FROM paquete WHERE id=?";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble("precio");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
 }

@@ -16,12 +16,12 @@ import java.util.List;
  * @author fernan
  */
 public class DestinoDAO {
+
     public boolean crearDestino(Destino d) {
 
         String sql = "INSERT INTO destino(nombre, pais, descripcion, clima, imagen_url) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection con = ConexionBD.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, d.getNombre());
             ps.setString(2, d.getPais());
@@ -31,80 +31,101 @@ public class DestinoDAO {
 
             return ps.executeUpdate() > 0;
 
+        } catch (java.sql.SQLIntegrityConstraintViolationException e) {
+            System.out.println("Destino duplicado (BD): " + d.getNombre());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
-        }
-    
+    }
+
     public boolean actualizarDestino(Destino d) {
 
-    String sql = "UPDATE destino SET nombre=?, pais=?, descripcion=?, clima=?, imagen_url=? WHERE id=?";
+        String sql = "UPDATE destino SET nombre=?, pais=?, descripcion=?, clima=?, imagen_url=? WHERE id=?";
 
-    try (Connection con = ConexionBD.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setString(1, d.getNombre());
-        ps.setString(2, d.getPais());
-        ps.setString(3, d.getDescripcion());
-        ps.setString(4, d.getClima());
-        ps.setString(5, d.getImagen());
-        ps.setInt(6, d.getId());
+            ps.setString(1, d.getNombre());
+            ps.setString(2, d.getPais());
+            ps.setString(3, d.getDescripcion());
+            ps.setString(4, d.getClima());
+            ps.setString(5, d.getImagen());
+            ps.setInt(6, d.getId());
 
-        return ps.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;
 
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-
-    return false;
-}
-    public boolean eliminarDestino(int id) {
-
-    String sql = "DELETE FROM destino WHERE id=?";
-
-    try (Connection con = ConexionBD.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-
-        ps.setInt(1, id);
-
-        return ps.executeUpdate() > 0;
-
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-
-    return false;
-}
-    
-    public List<Destino> obtenerTodos() {
-
-    List<Destino> lista = new ArrayList<>();
-
-    String sql = "SELECT * FROM destino";
-
-    try (Connection con = ConexionBD.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-
-        while (rs.next()) {
-
-            Destino d = new Destino();
-
-            d.setId(rs.getInt("id"));
-            d.setNombre(rs.getString("nombre"));
-            d.setPais(rs.getString("pais"));
-            d.setDescripcion(rs.getString("descripcion"));
-            d.setClima(rs.getString("clima"));
-            d.setImagen(rs.getString("imagen_url"));
-
-            lista.add(d);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return false;
     }
 
-    return lista;
-}
+    public boolean eliminarDestino(int id) {
+
+        String sql = "DELETE FROM destino WHERE id=?";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<Destino> obtenerTodos() {
+
+        List<Destino> lista = new ArrayList<>();
+
+        String sql = "SELECT * FROM destino";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+
+                Destino d = new Destino();
+
+                d.setId(rs.getInt("id"));
+                d.setNombre(rs.getString("nombre"));
+                d.setPais(rs.getString("pais"));
+                d.setDescripcion(rs.getString("descripcion"));
+                d.setClima(rs.getString("clima"));
+                d.setImagen(rs.getString("imagen_url"));
+
+                lista.add(d);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+
+    public int obtenerIdPorNombre(String nombre) {
+
+        String sql = "SELECT id FROM destino WHERE nombre = ?";
+
+        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1; //no encontrado
+    }
+
 }

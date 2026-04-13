@@ -1,26 +1,37 @@
 <div class="background">
   <div class="container">
-
     <h1 class="title">Gestión de Clientes</h1>
 
     <div class="cards">
-
       <!-- REGISTRAR CLIENTE -->
       <div class="card" *ngIf="accion === 'registrar'">
         <h3>Registrar Cliente</h3>
 
         <div class="formulario">
-          <input type="text" [(ngModel)]="cliente.dpi" name="dpi" placeholder="DPI o Pasaporte">
-          <input type="text" [(ngModel)]="cliente.nombre" name="nombre" placeholder="Nombre completo">
-          <input type="date" [(ngModel)]="cliente.fecha" name="fecha">
-          <input type="text" [(ngModel)]="cliente.telefono" name="telefono" placeholder="Teléfono">
-          <input type="email" [(ngModel)]="cliente.correo" name="correo" placeholder="Correo">
-          <input type="text" [(ngModel)]="cliente.nacionalidad" name="nacionalidad" placeholder="Nacionalidad">
+          <input type="text" [(ngModel)]="cliente.dpi" name="dpi" placeholder="DPI o Pasaporte" />
+          <input
+            type="text"
+            [(ngModel)]="cliente.nombre"
+            name="nombre"
+            placeholder="Nombre completo"
+          />
+          <input type="date" [(ngModel)]="cliente.fecha" name="fecha" />
+          <input
+            type="text"
+            [(ngModel)]="cliente.telefono"
+            name="telefono"
+            placeholder="Teléfono"
+          />
+          <input type="email" [(ngModel)]="cliente.correo" name="correo" placeholder="Correo" />
+          <input
+            type="text"
+            [(ngModel)]="cliente.nacionalidad"
+            name="nacionalidad"
+            placeholder="Nacionalidad"
+          />
 
           <button (click)="guardarCliente()">Guardar</button>
-          <button *ngIf="mostrarBotonRegresar" class="btn-secondary" (click)="regresar()">
-            Regresar
-          </button>
+          <button type="button" class="btn-secondary" (click)="regresar()">Regresar</button>
         </div>
       </div>
 
@@ -29,24 +40,69 @@
         <h3>Editar Cliente</h3>
 
         <div class="formulario">
-          <input type="text" [(ngModel)]="cliente.dpi" name="dpiEditar" placeholder="Ingrese DPI del cliente">
+          <input
+            type="text"
+            [(ngModel)]="cliente.dpi"
+            name="dpiEditar"
+            placeholder="Ingrese DPI del cliente"
+          />
 
           <button type="button" (click)="buscarCliente()">Buscar</button>
 
-          <input type="text" [(ngModel)]="cliente.nombre" name="nombreEditar" placeholder="Nombre completo">
-          <input type="date" [(ngModel)]="cliente.fecha" name="fechaEditar">
-          <input type="text" [(ngModel)]="cliente.telefono" name="telefonoEditar" placeholder="Teléfono">
-          <input type="email" [(ngModel)]="cliente.correo" name="correoEditar" placeholder="Correo">
-          <input type="text" [(ngModel)]="cliente.nacionalidad" name="nacionalidadEditar" placeholder="Nacionalidad">
+          <input
+            type="text"
+            [(ngModel)]="cliente.nombre"
+            name="nombreEditar"
+            placeholder="Nombre completo"
+          />
+          <input type="date" [(ngModel)]="cliente.fecha" name="fechaEditar" />
+          <input
+            type="text"
+            [(ngModel)]="cliente.telefono"
+            name="telefonoEditar"
+            placeholder="Teléfono"
+          />
+          <input
+            type="email"
+            [(ngModel)]="cliente.correo"
+            name="correoEditar"
+            placeholder="Correo"
+          />
+          <input
+            type="text"
+            [(ngModel)]="cliente.nacionalidad"
+            name="nacionalidadEditar"
+            placeholder="Nacionalidad"
+          />
 
           <button type="button" (click)="actualizarCliente()">Actualizar</button>
           <button type="button" class="btn-secondary" (click)="regresar()">Regresar</button>
         </div>
       </div>
+    </div>
+    <!-- CONSULTAR CLIENTE -->
+<div class="card" *ngIf="accion === 'consultar'">
+  <h3>Consultar Cliente</h3>
 
+  <div class="formulario">
+    <input
+      type="text"
+      [(ngModel)]="cliente.dpi"
+      placeholder="Ingrese DPI del cliente"
+    />
+
+    <button (click)="buscarCliente()">Buscar</button>
+
+    <div *ngIf="cliente.nombre">
+      <p><strong>Nombre:</strong> {{ cliente.nombre }}</p>
+      <p><strong>Fecha de nacimiento:</strong> {{ cliente.fecha }}</p>
+      <p><strong>Teléfono:</strong> {{ cliente.telefono }}</p>
+      <p><strong>Correo:</strong> {{ cliente.correo }}</p>
+      <p><strong>Nacionalidad:</strong> {{ cliente.nacionalidad }}</p>
     </div>
 
-    <button class="btn-back" (click)="regresar()">Volver a Atención</button>
+    
 
+    <button class="btn-back" (click)="regresar()">regresar</button>
   </div>
 </div>

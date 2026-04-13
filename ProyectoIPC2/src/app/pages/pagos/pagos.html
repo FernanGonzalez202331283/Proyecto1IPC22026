@@ -24,11 +24,45 @@
           <p><strong>Destino:</strong> {{reservacion.destino}}</p>
           <p><strong>Fecha:</strong> {{reservacion.fechaViaje}}</p>
           <p><strong>Personas:</strong> {{reservacion.candidadPersonas}}</p>
+
           <p><strong>Total:</strong> Q{{reservacion.cosotTotal}}</p>
+          <p><strong>Pagado:</strong> Q{{reservacion.totalPagado}}</p> <!-- 🔥 NUEVO -->
+          <p><strong>Pendiente:</strong> 
+            Q{{reservacion.cosotTotal - reservacion.totalPagado}}
+          </p>
+
           <p><strong>Estado:</strong> {{reservacion.estado}}</p>
         </div>
 
-        <!--PAGO -->
+        <!-- HISTORIAL DE PAGOS -->
+        <h3>Historial de Pagos</h3>
+
+        <div *ngIf="reservacion.pagos?.length > 0; else sinPagos">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Monto</th>
+                <th>Método</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of reservacion.pagos">
+                <td>{{p.id}}</td>
+                <td>Q{{p.monto}}</td>
+                <td>{{p.metodo}}</td>
+                <td>{{p.fecha}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #sinPagos>
+          <p>No hay pagos registrados.</p>
+        </ng-template>
+
+        <!-- REGISTRAR PAGO -->
         <h3>Registrar Pago</h3>
 
         <input type="number" [(ngModel)]="monto" placeholder="Monto">

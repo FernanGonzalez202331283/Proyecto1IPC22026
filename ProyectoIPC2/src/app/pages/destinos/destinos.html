@@ -36,7 +36,12 @@
         <div *ngSwitchCase="'editar'" class="form-container">
           <h2>Editar Destino</h2>
 
-          <input [(ngModel)]="id" placeholder="ID">
+         <select (change)="seleccionarDestino($event)">
+            <option value="">Seleccione un destino</option>
+            <option *ngFor="let d of destinos" [value]="d.id">
+              {{ d.nombre }}
+            </option>
+          </select>
 
           <div class="input-group">
             <input [(ngModel)]="nombre" placeholder="Nombre">
@@ -55,8 +60,12 @@
         <div *ngSwitchCase="'eliminar'" class="form-container">
           <h2>Eliminar Destino</h2>
 
-          <input [(ngModel)]="id" placeholder="ID">
-
+          <select (change)="seleccionarDestino($event)">
+          <option value="">Seleccione un destino</option>
+          <option *ngFor="let d of destinos" [value]="d.id">
+            {{ d.nombre }}
+          </option>
+        </select>
           <button class="confirmar" (click)="eliminarDestino()">Eliminar</button>
         </div>
 

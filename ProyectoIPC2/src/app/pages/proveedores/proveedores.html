@@ -1,7 +1,7 @@
 <div class="background">
   <div class="container">
     <div class="content">
-      <!-- ===== CREAR ===== -->
+      <!--  CREAR  -->
       <div *ngIf="accion === 'crear'" class="form-container">
         <h2>Crear Proveedor</h2>
 
@@ -15,35 +15,44 @@
         <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
       </div>
 
-      <!-- ===== EDITAR ===== -->
       <div *ngIf="accion === 'editar'" class="form-container">
-        <h2>Editar Proveedor</h2>
+  <h2>Editar Proveedor</h2>
 
-        <input type="number" [(ngModel)]="id" placeholder="ID del proveedor">
+  <!-- SELECT -->
+  <select [(ngModel)]="proveedorSeleccionado" (change)="seleccionarProveedor()">
+    <option [ngValue]="null" disabled selected>Seleccione proveedor</option>
+    <option *ngFor="let p of proveedores" [ngValue]="p.id">
+      {{ p.nombre }}
+    </option>
+  </select>
 
-        <input [(ngModel)]="nombre" placeholder="Nombre">
-        <input [(ngModel)]="tipo" placeholder="Tipo">
-        <input [(ngModel)]="pais" placeholder="País">
-        <input [(ngModel)]="contacto" placeholder="Contacto">
+  <!-- CAMPOS -->
+  <input [(ngModel)]="nombre" placeholder="Nombre">
+  <input [(ngModel)]="tipo" placeholder="Tipo">
+  <input [(ngModel)]="pais" placeholder="País">
+  <input [(ngModel)]="contacto" placeholder="Contacto">
 
-        <button (click)="editarProveedor()">Actualizar</button>
+  <button (click)="editarProveedor()">Actualizar</button>
 
-        <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
-      </div>
+  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+</div>
 
-      <!-- ===== ELIMINAR ===== -->
-      <div *ngIf="accion === 'eliminar'" class="form-container">
-        <h2>Eliminar Proveedor</h2>
+      <!--  ELIMINAR  -->
+    <div *ngIf="accion === 'eliminar'" class="form-container">
+  <h2>Eliminar Proveedor</h2>
 
-        <input type="number" [(ngModel)]="id" placeholder="ID del proveedor">
+  <!-- SELECT -->
+  <select [(ngModel)]="proveedorSeleccionado" (change)="seleccionarProveedor()">
+    <option [ngValue]="null" disabled selected>Seleccione proveedor</option>
+    <option *ngFor="let p of proveedores" [ngValue]="p.id">
+      {{ p.nombre }}
+    </option>
+  </select>
 
-        <button (click)="eliminarProveedor()">Eliminar</button>
+  <button (click)="eliminarProveedor()">Eliminar</button>
 
-        <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
-      </div>
-
-    </div>
-
+  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+</div>
     <!-- BOTÓN GLOBAL -->
     <button class="btn-regresar" (click)="regresar()">Regresar</button>
 

@@ -13,15 +13,12 @@ import html2canvas from 'html2canvas';
   styleUrl: './reservaciones.css',
 })
 export class Reservaciones {
-
   accion: string = '';
   historial: any[] = [];
-  // PAQUETES
   paquetes: any[] = [];
   paqueteSeleccionado: any = null;
   dpiBuscar: string = '';
   detallePaquete: any[] = [];
-  // DATOS RESERVACIÓN
   fecha_viaje: string = '';
   cantidad: number = 1;
   costo: number = 0;
@@ -29,117 +26,125 @@ export class Reservaciones {
   destinoSeleccionado: any = null;
   fechaBuscar: string = '';
   disponibles: any[] = [];
-  // PASAJEROS
   dpis: string[] = [''];
-  clientes: any[] = [{}];
+  clientes: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
-     this.route.queryParams.subscribe(params => {
-    this.accion = params['accion'];
+    this.route.queryParams.subscribe((params) => {
+      this.accion = params['accion'];
 
-    // LIMPIAR DATOS SI CAMBIA VISTA
-    this.historial = [];
-    this.disponibles = [];
+      // LIMPIAR DATOS SI CAMBIA VISTA
+      this.historial = [];
+      this.disponibles = [];
 
-    if (this.accion === 'crear') {
-      this.cargarPaquetes();
-    }
+      if (this.accion === 'crear') {
+        this.cargarPaquetes();
+      }
 
-    if (this.accion === 'disponibles') {
-      this.cargarDestinos();
-    }
-    if (this.accion === 'hoy') {
-      this.cargarHoy();
-    }
-  });
-
+      if (this.accion === 'disponibles') {
+        this.cargarDestinos();
+      }
+      if (this.accion === 'hoy') {
+        this.cargarHoy();
+      }
+    });
   }
 
   cargarHoy() {
-  fetch('http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=hoy', {
-    method: 'GET',
-    credentials: 'include'
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log("Reservaciones hoy:", data);
-    this.disponibles = data; // reutilizamos la tabla
-  })
-  .catch(err => console.error(err));
-}
+    fetch('http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=hoy', {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Reservaciones hoy:', data);
+        this.disponibles = data;
+      })
+      .catch((err) => console.error(err));
+  }
 
-mostrarHoy() {
-  this.accion = 'hoy';
-  this.cargarHoy();
-}
+  mostrarHoy() {
+    this.accion = 'hoy';
+    this.cargarHoy();
+  }
   cargarDestinos() {
-  fetch('http://localhost:8080/Proyecto1IPC2/DestinoServlet', {
-    method: 'GET',
-    credentials: 'include'
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log("Destinos:", data);
-    this.destinos = data;
-  })
-  .catch(err => console.error(err));
-}
-
-cargarDisponibles() {
-
-  if (!this.fechaBuscar) {
-    alert("Seleccione fecha");
-    return;
+    fetch('http://localhost:8080/Proyecto1IPC2/DestinoServlet', {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Destinos:', data);
+        this.destinos = data;
+      })
+      .catch((err) => console.error(err));
   }
 
-  fetch(`http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=disponibles&fecha=${this.fechaBuscar}`, {
-    method: 'GET',
-    credentials: 'include'
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log("Disponibles:", data);
-    this.disponibles = data;
-  })
-  .catch(err => console.error(err));
-}
+  cargarDisponibles() {
+    if (!this.fechaBuscar) {
+      alert('Seleccione fecha');
+      return;
+    }
 
-cargarHistorial() {
-
-  if (!this.dpiBuscar || this.dpiBuscar.trim() === '') {
-    alert("Ingrese un DPI");
-    return;
+    fetch(
+      `http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=disponibles&fecha=${this.fechaBuscar}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      },
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Disponibles:', data);
+        this.disponibles = data;
+      })
+      .catch((err) => console.error(err));
   }
 
-  fetch(`http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=historialCliente&dpi=${this.dpiBuscar}`, {
-    method: 'GET',
-    credentials: 'include'
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log("Historial:", data);
-    this.historial = data;
-  })
-  .catch(err => console.error(err));
-}
+  cargarHistorial() {
+    if (!this.dpiBuscar || this.dpiBuscar.trim() === '') {
+      alert('Ingrese un DPI');
+      return;
+    }
+
+    fetch(
+      `http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=historialCliente&dpi=${this.dpiBuscar}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      },
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Historial:', data);
+        this.historial = data;
+      })
+      .catch((err) => console.error(err));
+  }
 
   // OBTENER PAQUETES
   cargarPaquetes() {
     fetch('http://localhost:8080/Proyecto1IPC2/PaqueteServlet', {
       method: 'GET',
-      credentials: 'include'
+      credentials: 'include',
     })
-    .then(res => res.json())
-    .then(data => {
-      console.log("Paquetes:", data);
-      this.paquetes = data;
-    })
-    .catch(err => console.error(err));
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Paquetes:', data);
+
+        if (Array.isArray(data)) {
+          this.paquetes = data;
+        } else {
+          console.error('Error backend:', data);
+          this.paquetes = [];
+          alert(data.error || 'Error al cargar paquetes');
+        }
+      });
   }
 
   // CALCULAR COSTO
@@ -152,7 +157,7 @@ cargarHistorial() {
   // AGREGAR PASAJERO
   agregarPasajero() {
     this.dpis.push('');
-    this.clientes.push({});
+    this.clientes.push(null);
     this.cantidad = this.dpis.length;
     this.calcularCosto();
   }
@@ -167,89 +172,83 @@ cargarHistorial() {
 
   // BUSCAR CLIENTE
   buscarCliente(index: number) {
-
     const dpi = this.dpis[index];
 
     if (!dpi || dpi.trim() === '') {
-      alert("Ingrese DPI");
+      alert('Ingrese DPI');
       return;
     }
 
     fetch(`http://localhost:8080/Proyecto1IPC2/ClienteServlet?dpi=${dpi}`, {
       method: 'GET',
-      credentials: 'include'
+      credentials: 'include',
     })
-    .then(res => res.json())
-    .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Cliente:', data);
 
-      console.log("Cliente:", data);
+        if (data.mensaje === 'Cliente no encontrado') {
+          const ir = confirm('Cliente no existe ¿Desea registrarlo?');
 
-      if (data.mensaje === "Cliente no encontrado") {
+          if (ir) {
+            this.router.navigate(['/clientes'], {
+              queryParams: {
+                accion: 'registrar',
+                dpi: dpi,
+              },
+            });
+          }
 
-        const ir = confirm("Cliente no existe ¿Desea registrarlo?");
-
-        if (ir) {
-          this.router.navigate(['/clientes'], {
-            queryParams: {
-              accion: 'registrar',
-              dpi: dpi
-            }
-          });
+          this.clientes[index] = null;
+        } else {
+          this.clientes[index] = data;
         }
-
-        this.clientes[index] = {};
-
-      } else {
-        this.clientes[index] = data;
-      }
-
-    })
-    .catch(err => console.error(err));
+      })
+      .catch((err) => console.error(err));
   }
 
   // CREAR RESERVACIÓN
   crearReservacion() {
-
     //VALIDACIONES
     if (!this.paqueteSeleccionado?.id) {
-      alert("Seleccione un paquete válido");
+      alert('Seleccione un paquete válido');
       return;
     }
 
     if (!this.fecha_viaje) {
-      alert("Seleccione fecha");
+      alert('Seleccione fecha');
       return;
     }
 
     if (this.dpis.length === 0) {
-      alert("Debe agregar pasajeros");
+      alert('Debe agregar pasajeros');
       return;
     }
 
     for (let dpi of this.dpis) {
       if (!dpi || dpi.trim() === '') {
-        alert("Hay DPI vacíos");
+        alert('Hay DPI vacíos');
         return;
       }
     }
 
-    //FORMATEO CORRECTO DE FECHA
+    //FORMATEO  DE FECHA
     const fechaObj = new Date(this.fecha_viaje);
 
     if (isNaN(fechaObj.getTime())) {
-      alert("Fecha inválida");
+      alert('Fecha inválida');
       return;
     }
 
     const fechaFormateada = fechaObj.toISOString().split('T')[0];
 
-    //DEBUG CLAVE
-    console.log("=== DEBUG RESERVACIÓN ===");
-    console.log("Fecha enviada:", fechaFormateada);
-    console.log("Paquete ID:", this.paqueteSeleccionado.id);
-    console.log("Cantidad:", this.cantidad);
-    console.log("Costo:", this.costo);
-    console.log("DPIs:", this.dpis);
+    //DEBUG 
+    console.log('=== DEBUG RESERVACIÓN ===');
+    console.log('Fecha enviada:', fechaFormateada);
+    console.log('Paquete ID:', this.paqueteSeleccionado.id);
+    console.log('Cantidad:', this.cantidad);
+    console.log('Costo:', this.costo);
+    console.log('DPIs:', this.dpis);
 
     const formData = new FormData();
 
@@ -258,52 +257,46 @@ cargarHistorial() {
     formData.append('cantidad', this.cantidad.toString());
     formData.append('costo', this.costo.toString());
 
-    this.dpis.forEach(dpi => {
+    this.dpis.forEach((dpi) => {
       formData.append('dpis', dpi);
     });
-
-    //DEBUG FINAL (MUY IMPORTANTE)
     for (let pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
     }
 
-  fetch('http://localhost:8080/Proyecto1IPC2/ReservacionServlet', {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      fecha_viaje: fechaFormateada,
-      paquete_id: this.paqueteSeleccionado.id,
-      cantidad: this.cantidad,
-      costo: this.costo,
-      dpis: this.dpis
+    fetch('http://localhost:8080/Proyecto1IPC2/ReservacionServlet', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        fecha_viaje: fechaFormateada,
+        paquete_id: this.paqueteSeleccionado.id,
+        cantidad: this.cantidad,
+        costo: this.costo,
+        dpis: this.dpis,
+      }),
     })
-  })
-    .then(res => res.json())
-    .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Respuesta:', data);
 
-  console.log("Respuesta:", data);
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert(data.mensaje || 'Reservación creada correctamente');
+          const id = data.idReservacion;
 
-  if (data.error) {
-    alert(data.error);
-  } else {
-    alert(data.mensaje || "Reservación creada correctamente");
+          this.generarPDF(id); //GENERAR PDF
 
-    // AQUÍ USAS EL ID
-    const id = data.idReservacion;
-
-    this.generarPDF(id); //GENERAR PDF
-
-    this.resetFormulario();
-  }
-
-})
-    .catch(error => {
-      console.error(error);
-      alert("Error al crear reservación");
-    });
+          this.resetFormulario();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        alert('Error al crear reservación');
+      });
   }
 
   // LIMPIAR
@@ -313,50 +306,51 @@ cargarHistorial() {
     this.cantidad = 1;
     this.costo = 0;
     this.dpis = [''];
-    this.clientes = [{}];
+    this.clientes = [null];
   }
 
   trackByIndex(index: number, item: any): number {
     return index;
   }
-  
+
   regresar() {
     this.router.navigate(['/atencion']);
   }
   cargarDetallePaquete() {
+    if (!this.paqueteSeleccionado?.id) return;
 
-  if (!this.paqueteSeleccionado?.id) return;
+    fetch(
+      `http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=detallePaquete&paqueteId=${this.paqueteSeleccionado.id}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      },
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Detalle paquete:', data);
+        this.detallePaquete = data;
+      })
+      .catch((err) => console.error(err));
+  }
+  getCostoTotalServicios(): number {
+    return this.detallePaquete.reduce((total, d) => total + (d.costo || 0), 0);
+  }
 
-  fetch(`http://localhost:8080/Proyecto1IPC2/ReservacionServlet?accion=detallePaquete&paqueteId=${this.paqueteSeleccionado.id}`, {
-    method: 'GET',
-    credentials: 'include'
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log("Detalle paquete:", data);
-    this.detallePaquete = data;
-  })
-  .catch(err => console.error(err));
-}
-getCostoTotalServicios(): number {
-  return this.detallePaquete.reduce((total, d) => total + (d.costo || 0), 0);
-}
+  getGanancia(): number {
+    return (this.detallePaquete[0]?.precio || 0) - this.getCostoTotalServicios();
+  }
+  generarPDF(id: number) {
+    fetch(`http://localhost:8080/Proyecto1IPC2/ReservacionServlet?id=${id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('DATA PDF:', data);
+        const imgWidth = 180;
 
-getGanancia(): number {
-  return (this.detallePaquete[0]?.precio || 0) - this.getCostoTotalServicios();
-}
-generarPDF(id: number) {
-
-  fetch(`http://localhost:8080/Proyecto1IPC2/ReservacionServlet?id=${id}`, {
-    method: 'GET',
-    credentials: 'include'
-  })
-  .then(res => res.json())
-  .then(data => {
-      console.log("DATA PDF:", data);
-    const imgWidth = 180;
-
-   const contenido = `
+        const contenido = `
 <div style="font-family: Arial; padding: 10px;">
   <h2>CONSTANCIA DE RESERVACIÓN</h2>
 
@@ -375,11 +369,7 @@ generarPDF(id: number) {
 
   <p><b>Listado de pasajeros:</b></p>
   <ul>
-    ${
-      data?.pasajeros
-        ? data.pasajeros.map((p: any) => `<li>${p}</li>`)
-        : '<li>No disponible</li>'
-    }
+    ${data?.pasajeros ? data.pasajeros.map((p: any) => `<li>${p}</li>`) : '<li>No disponible</li>'}
   </ul>
 
   <hr>
@@ -394,24 +384,21 @@ generarPDF(id: number) {
   ${data?.imagen ? `<img src="${data.imagen}" width="200"/>` : ''}
 </div>
 `;
-    const temp = document.createElement('div');
-    temp.innerHTML = contenido;
-    document.body.appendChild(temp);
+        const temp = document.createElement('div');
+        temp.innerHTML = contenido;
+        document.body.appendChild(temp);
 
-    html2canvas(temp).then(canvas => {
+        html2canvas(temp).then((canvas) => {
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF();
 
-      const imgHeight = canvas.height * imgWidth / canvas.width;
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
+          pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+          pdf.save(`Reservacion_${data.id}.pdf`);
 
-     pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-      pdf.save(`Reservacion_${data.id}.pdf`);
-
-      document.body.removeChild(temp);
-    });
-
-  })
-  .catch(err => console.error(err));
-}
-
+          document.body.removeChild(temp);
+        });
+      })
+      .catch((err) => console.error(err));
+  }
 }

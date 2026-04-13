@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.ResultSet;
 import java.util.List;
 
 /**
@@ -23,7 +22,8 @@ import java.util.List;
  */
 @WebServlet("/AlertaDemandaServlet")
 public class AlertaDemandaServlet extends HttpServlet {
-  @Override
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 

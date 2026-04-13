@@ -21,20 +21,22 @@ import java.util.List;
  * @author fernan
  */
 @WebServlet("/ProveedorServlet")
-public class ProveedorServlet extends HttpServlet{
+public class ProveedorServlet extends HttpServlet {
+
     private void configurarCORS(HttpServletResponse response) {
-    response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
-    response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    response.setHeader("Access-Control-Allow-Credentials", "true");
-}
-      @Override
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+
+    @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         configurarCORS(response);
         response.setStatus(HttpServletResponse.SC_OK);
     }
-    
+
     // Validación de sesión y rol
     private boolean validar(HttpServletRequest request, HttpServletResponse response) throws IOException {
         configurarCORS(response);
@@ -54,84 +56,87 @@ public class ProveedorServlet extends HttpServlet{
         return true;
     }
 
-   @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
-    configurarCORS(response);
-    response.setContentType("application/json");
-    PrintWriter out = response.getWriter();
+        configurarCORS(response);
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
 
-    if (!validar(request, response)) return;
-
-    try {
-        //LEER JSON
-        StringBuilder sb = new StringBuilder();
-        String line;
-
-        try (var reader = request.getReader()) {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-        }
-
-        Gson gson = new Gson();
-        Proveedor p = gson.fromJson(sb.toString(), Proveedor.class);
-
-        if (p == null || p.getAccion() == null) {
-            out.print("{\"error\":\"Acción requerida\"}");
+        if (!validar(request, response)) {
             return;
         }
 
-        ProveedorDAO dao = new ProveedorDAO();
-        String accion = p.getAccion();
+        try {
+            //LEER JSON
+            StringBuilder sb = new StringBuilder();
+            String line;
 
-        // ===== CREAR =====
-        if ("crear".equals(accion)) {
-
-            if (dao.crearProveedor(p)) {
-                out.print("{\"status\":\"ok\",\"mensaje\":\"Proveedor creado\"}");
-            } else {
-                out.print("{\"error\":\"No se pudo crear\"}");
+            try (var reader = request.getReader()) {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
             }
 
-        // ===== EDITAR =====
-        } else if ("editar".equals(accion)) {
+            Gson gson = new Gson();
+            Proveedor p = gson.fromJson(sb.toString(), Proveedor.class);
 
-            if (p.getId() == 0) {
-                out.print("{\"error\":\"ID requerido\"}");
+            if (p == null || p.getAccion() == null) {
+                out.print("{\"error\":\"Acción requerida\"}");
                 return;
             }
 
-            if (dao.actualizarProveedor(p)) {
-                out.print("{\"status\":\"ok\",\"mensaje\":\"Proveedor actualizado\"}");
+            ProveedorDAO dao = new ProveedorDAO();
+            String accion = p.getAccion();
+
+            // CREAR
+            if ("crear".equals(accion)) {
+
+                if (dao.crearProveedor(p)) {
+                    out.print("{\"status\":\"ok\",\"mensaje\":\"Proveedor creado\"}");
+                } else {
+                    out.print("{\"error\":\"No se pudo crear\"}");
+                }
+
+                // EDIDAR
+            } else if ("editar".equals(accion)) {
+
+                if (p.getId() == 0) {
+                    out.print("{\"error\":\"ID requerido\"}");
+                    return;
+                }
+
+                if (dao.actualizarProveedor(p)) {
+                    out.print("{\"status\":\"ok\",\"mensaje\":\"Proveedor actualizado\"}");
+                } else {
+                    out.print("{\"error\":\"No se pudo actualizar\"}");
+                }
+
+                // ELIMINAR
+            } else if ("eliminar".equals(accion)) {
+
+                if (p.getId() == 0) {
+                    out.print("{\"error\":\"ID requerido\"}");
+                    return;
+                }
+
+                if (dao.eliminarProveedor(p.getId())) {
+                    out.print("{\"status\":\"ok\",\"mensaje\":\"Proveedor eliminado\"}");
+                } else {
+                    out.print("{\"error\":\"No se pudo eliminar\"}");
+                }
+
             } else {
-                out.print("{\"error\":\"No se pudo actualizar\"}");
+                out.print("{\"error\":\"Acción inválida\"}");
             }
 
-        // ===== ELIMINAR =====
-        } else if ("eliminar".equals(accion)) {
-
-            if (p.getId() == 0) {
-                out.print("{\"error\":\"ID requerido\"}");
-                return;
-            }
-
-            if (dao.eliminarProveedor(p.getId())) {
-                out.print("{\"status\":\"ok\",\"mensaje\":\"Proveedor eliminado\"}");
-            } else {
-                out.print("{\"error\":\"No se pudo eliminar\"}");
-            }
-
-        } else {
-            out.print("{\"error\":\"Acción inválida\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.print("{\"error\":\"Datos inválidos\"}");
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        out.print("{\"error\":\"Datos inválidos\"}");
     }
-}
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -144,7 +149,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         Gson gson = new Gson();
 
         try {
-            // Ahora dao devuelve List<Proveedor>
+            //Ahora dao devuelve lista de proveedor 
             List<Proveedor> lista = dao.listarProveedores();
             out.print(gson.toJson(lista));
         } catch (Exception e) {

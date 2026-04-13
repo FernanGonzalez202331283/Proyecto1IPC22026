@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -33,7 +35,7 @@ public class PagoServlet extends HttpServlet{
         response.setHeader("Access-Control-Allow-Credentials", "true");
     }
 
-    //PREFLIGHT (CLAVE)
+    //PREFLIGHT 
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -45,7 +47,7 @@ public class PagoServlet extends HttpServlet{
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        configurarCORS(response); //ESTO FALTABA
+        configurarCORS(response);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -85,8 +87,9 @@ public class PagoServlet extends HttpServlet{
             String metodo = data.get("metodo").getAsString();
 
             PagoDAO dao = new PagoDAO();
+            Timestamp fecha = Timestamp.valueOf(LocalDateTime.now());
 
-            if (dao.registrarPago(reservacionId, monto, metodo)) {
+            if (dao.registrarPago(reservacionId, monto, metodo, fecha)) {
                 out.print("{\"status\":\"ok\",\"mensaje\":\"Pago registrado\"}");
             } else {
                 out.print("{\"error\":\"No se pudo registrar\"}");
